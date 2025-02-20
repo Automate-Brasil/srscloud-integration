@@ -300,15 +300,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#autenticacao-e-configuracao-inicial" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 Autenticação e Configuração Inicial
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#iniciar-execucao" class="md-nav__link">
     <span class="md-ellipsis">
       🔹 Iniciar Execução
@@ -327,35 +318,20 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gerenciar-filas" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 Gerenciar Filas
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="🔹 Gerenciar Filas">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#inserir-tarefa-na-fila" class="md-nav__link">
     <span class="md-ellipsis">
-      Inserir Tarefa na Fila
+      🔹 Inserir Tarefa na Fila
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#obter-proxima-tarefa" class="md-nav__link">
     <span class="md-ellipsis">
-      Obter Próxima Tarefa
+      🔹 Obter Próxima Tarefa
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -412,15 +388,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#autenticacao-e-configuracao-inicial" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 Autenticação e Configuração Inicial
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#iniciar-execucao" class="md-nav__link">
     <span class="md-ellipsis">
       🔹 Iniciar Execução
@@ -439,35 +406,20 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gerenciar-filas" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 Gerenciar Filas
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="🔹 Gerenciar Filas">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#inserir-tarefa-na-fila" class="md-nav__link">
     <span class="md-ellipsis">
-      Inserir Tarefa na Fila
+      🔹 Inserir Tarefa na Fila
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#obter-proxima-tarefa" class="md-nav__link">
     <span class="md-ellipsis">
-      Obter Próxima Tarefa
+      🔹 Obter Próxima Tarefa
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -508,26 +460,15 @@
 <h1 id="exemplos-de-uso-da-api-srs">📌 Exemplos de Uso da API SRS</h1>
 <p>Este documento contém exemplos práticos de como interagir com a API SRS usando Python. Os exemplos cobrem autenticação, execução de processos, gerenciamento de filas, extração de relatórios e envio de notificações.</p>
 <hr />
-<h2 id="autenticacao-e-configuracao-inicial">🔹 <strong>Autenticação e Configuração Inicial</strong></h2>
-<p>Antes de fazer qualquer requisição, configure o token de autenticação.</p>
-<pre><code class="language-python">import requests
-
-TOKEN = &quot;EID128d4c452d8c4be3ba3c01548c024082_b0cfefce-79b8-4301-92a9-3a106c153793&quot;
-HEADERS = {
-    &quot;Authorization&quot;: f&quot;Bearer {TOKEN}&quot;,
-    &quot;Content-Type&quot;: &quot;application/json&quot;
-}
-</code></pre>
-<hr />
 <h2 id="iniciar-execucao">🔹 <strong>Iniciar Execução</strong></h2>
 <pre><code class="language-python">url = &quot;https://&lt;srs-dominio&gt;/api/execucao/iniciar&quot;
 payload = {
-    &quot;Token&quot;: TOKEN,
+    &quot;Token&quot;: &quot;XXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
     &quot;Workflow&quot;: &quot;P28&quot;,
     &quot;Tarefa&quot;: &quot;&quot;,
     &quot;NomeMaquina&quot;: &quot;SA210-TEC&quot;
 }
-response = requests.post(url, json=payload, headers=HEADERS)
+response = requests.post(url, data=payload)
 print(response.json())
 </code></pre>
 <hr />
@@ -535,61 +476,60 @@ print(response.json())
 <pre><code class="language-python">def registrar_log(execucaoId, mensagem):
     url = &quot;https://&lt;srs-dominio&gt;/api/execucao/log&quot;
     payload = {
-        &quot;Token&quot;: TOKEN,
+        &quot;Token&quot;: &quot;XXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
         &quot;ExecucaoId&quot;: execucaoId,
         &quot;StatusId&quot;: 2,
         &quot;Descricao&quot;: mensagem
     }
-    response = requests.post(url, json=payload, headers=HEADERS)
+    response = requests.post(url, json=payload)
     return response.json()
 
 execucao_id = &quot;5aa2bbfa-bbc2-4530-8ebd-d2df63623b4b&quot;
 registrar_log(execucao_id, &quot;Processo iniciado com sucesso&quot;)
 </code></pre>
 <hr />
-<h2 id="gerenciar-filas">🔹 <strong>Gerenciar Filas</strong></h2>
-<h3 id="inserir-tarefa-na-fila"><strong>Inserir Tarefa na Fila</strong></h3>
+<h2 id="inserir-tarefa-na-fila">🔹 <strong>Inserir Tarefa na Fila</strong></h2>
 <pre><code class="language-python">url = &quot;https://&lt;srs-dominio&gt;/api/fila/inserir&quot;
 payload = {
-    &quot;Token&quot;: TOKEN,
+    &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
     &quot;Workflow&quot;: &quot;relatorios&quot;,
     &quot;Tarefa&quot;: &quot;atividade&quot;,
     &quot;Referencia&quot;: &quot;Execucao_Mensal&quot;,
     &quot;ParametrosEntrada&quot;: {&quot;DataInicio&quot;: &quot;2024-12-01&quot;, &quot;DataFim&quot;: &quot;2025-01-01&quot;}
 }
-response = requests.post(url, json=payload, headers=HEADERS)
+response = requests.post(url, data=payload)
 print(response.json())
 </code></pre>
-<h3 id="obter-proxima-tarefa"><strong>Obter Próxima Tarefa</strong></h3>
+<h2 id="obter-proxima-tarefa">🔹 <strong>Obter Próxima Tarefa</strong></h2>
 <pre><code class="language-python">url = &quot;https://&lt;srs-dominio&gt;/api/fila/proximo&quot;
 payload = {&quot;Token&quot;: TOKEN}
-response = requests.get(url, json=payload, headers=HEADERS)
+response = requests.get(url, data=payload)
 print(response.json())
 </code></pre>
 <hr />
 <h2 id="gerar-relatorio-de-atividades">🔹 <strong>Gerar Relatório de Atividades</strong></h2>
 <pre><code class="language-python">url = &quot;https://&lt;srs-dominio&gt;/api/relatorio/relatorio_atividade&quot;
 payload = {
-    &quot;Token&quot;: TOKEN,
+    &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
     &quot;DataInicio&quot;: &quot;2024-12-01&quot;,
     &quot;DataFim&quot;: &quot;2025-01-01&quot;,
     &quot;Workflow&quot;: &quot;P28&quot;,
     &quot;Pagina&quot;: 0,
     &quot;Limite&quot;: 1000
 }
-response = requests.post(url, json=payload, headers=HEADERS)
+response = requests.post(url, data=payload)
 print(response.json())
 </code></pre>
 <hr />
 <h2 id="finalizar-execucao">🔹 <strong>Finalizar Execução</strong></h2>
 <pre><code class="language-python">url = &quot;https://&lt;srs-dominio&gt;/api/execucao/finalizar&quot;
 payload = {
-    &quot;Token&quot;: TOKEN,
+    &quot;Token&quot;: &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
     &quot;ExecucaoId&quot;: &quot;5aa2bbfa-bbc2-4530-8ebd-d2df63623b4b&quot;,
     &quot;Status&quot;: &quot;Ok&quot;,
     &quot;Descricao&quot;: &quot;Execução concluída&quot;
 }
-response = requests.post(url, json=payload, headers=HEADERS)
+response = requests.post(url, data=payload)
 print(response.json())
 </code></pre>
 <hr />

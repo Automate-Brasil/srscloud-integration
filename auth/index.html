@@ -283,14 +283,13 @@
         <li class="md-nav__item">
   <a href="#como-funciona-a-autenticacao" class="md-nav__link">
     <span class="md-ellipsis">
-      📌 Como Funciona a Autenticação
+      Como Funciona a Autenticação
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="📌 Como Funciona a Autenticação">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usando-python-requests" class="md-nav__link">
     <span class="md-ellipsis">
       Usando Python (requests)
@@ -298,16 +297,11 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#erros-comuns" class="md-nav__link">
     <span class="md-ellipsis">
-      🔴 Erros Comuns
+      Erros Comuns
     </span>
   </a>
   
@@ -316,7 +310,7 @@
         <li class="md-nav__item">
   <a href="#obtencao-de-token" class="md-nav__link">
     <span class="md-ellipsis">
-      🔑 Obtenção de Token
+      Obtenção de Token
     </span>
   </a>
   
@@ -380,14 +374,13 @@
         <li class="md-nav__item">
   <a href="#como-funciona-a-autenticacao" class="md-nav__link">
     <span class="md-ellipsis">
-      📌 Como Funciona a Autenticação
+      Como Funciona a Autenticação
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="📌 Como Funciona a Autenticação">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usando-python-requests" class="md-nav__link">
     <span class="md-ellipsis">
       Usando Python (requests)
@@ -395,16 +388,11 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#erros-comuns" class="md-nav__link">
     <span class="md-ellipsis">
-      🔴 Erros Comuns
+      Erros Comuns
     </span>
   </a>
   
@@ -413,7 +401,7 @@
         <li class="md-nav__item">
   <a href="#obtencao-de-token" class="md-nav__link">
     <span class="md-ellipsis">
-      🔑 Obtenção de Token
+      Obtenção de Token
     </span>
   </a>
   
@@ -437,19 +425,19 @@
 
 <h1 id="autenticacao-na-api-srs">🔐 Autenticação na API SRS</h1>
 <p>A API SRS requer autenticação para a maioria dos seus endpoints. O acesso é controlado por meio de um <strong>Token</strong> que deve ser enviado no cabeçalho de cada requisição.</p>
-<h2 id="como-funciona-a-autenticacao">📌 Como Funciona a Autenticação</h2>
+<h2 id="como-funciona-a-autenticacao">Como Funciona a Autenticação</h2>
 <ul>
 <li>O cliente deve fornecer um <strong>Token de autenticação</strong> válido.</li>
 <li>Se o token for inválido ou expirado, a API retornará um erro <code>403 - Não autorizado</code>.</li>
 <li>No <strong>payload da requisição</strong>, a chave deve ser enviada exatamente como <strong><code>Token</code></strong> (com <code>T</code> maiúsculo).</li>
 </ul>
-<h3 id="usando-python-requests"><strong>Usando Python (requests)</strong></h3>
+<h2 id="usando-python-requests"><strong>Usando Python (requests)</strong></h2>
 <pre><code class="language-python">import requests
 
 url = &quot;https://&lt;srs-dominio&gt;/api/relatorio/relatorio_atividade&quot;
 
 payload = {
-    &quot;Token&quot;: &quot;EID128d4c452d8c4be3ba3c01548c024082_b0cfefce-79b8-4301-92a9-3a106c153793&quot;,
+    &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
     &quot;DataInicio&quot;: &quot;2024-12-01&quot;,
     &quot;DataFim&quot;: &quot;2025-01-01&quot;,
     &quot;Workflow&quot;: &quot;P28&quot;,
@@ -458,15 +446,10 @@ payload = {
     &quot;Pagina&quot;: 0 # primeira página
 }
 
-headers = {
-    &quot;Authorization&quot;: &quot;Bearer SEU_TOKEN&quot;,
-    &quot;Content-Type&quot;: &quot;application/json&quot;
-}
-
-response = requests.post(url, json=payload, headers=headers)
+response = requests.post(url, data=payload)
 print(response.json())
 </code></pre>
-<h2 id="erros-comuns">🔴 <strong>Erros Comuns</strong></h2>
+<h2 id="erros-comuns"><strong>Erros Comuns</strong></h2>
 <table>
 <thead>
 <tr>
@@ -489,8 +472,8 @@ print(response.json())
 </tr>
 </tbody>
 </table>
-<h2 id="obtencao-de-token">🔑 <strong>Obtenção de Token</strong></h2>
-<p>O token de autenticação pode ser obtido via credenciais de usuário. Se houver um endpoint específico para login e geração de token, ele deve ser documentado aqui.</p>
+<h2 id="obtencao-de-token"><strong>Obtenção de Token</strong></h2>
+<p>O token de autenticação pode ser obtido via perfil do usuário no SRS Cloud. </p>
 <p>Se precisar de mais informações sobre autenticação, consulte a equipe de desenvolvimento.</p>
 
 

@@ -239,17 +239,17 @@
         <li class="md-nav__item">
   <a href="#visao-geral" class="md-nav__link">
     <span class="md-ellipsis">
-      🔹 Visão Geral
+      📍 Visão Geral
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="🔹 Visão Geral">
+    <nav class="md-nav" aria-label="📍 Visão Geral">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#estrutura-dos-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
-      📍 Estrutura dos Endpoints
+      🔹 Estrutura dos Endpoints
     </span>
   </a>
   
@@ -342,26 +342,8 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#funcoes-internas-administracao" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 Funções Internas (Administração)
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#autenticacao" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔐 Autenticação
-    </span>
-  </a>
   
 </li>
       
@@ -483,17 +465,17 @@
         <li class="md-nav__item">
   <a href="#visao-geral" class="md-nav__link">
     <span class="md-ellipsis">
-      🔹 Visão Geral
+      📍 Visão Geral
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="🔹 Visão Geral">
+    <nav class="md-nav" aria-label="📍 Visão Geral">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#estrutura-dos-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
-      📍 Estrutura dos Endpoints
+      🔹 Estrutura dos Endpoints
     </span>
   </a>
   
@@ -586,26 +568,8 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#funcoes-internas-administracao" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 Funções Internas (Administração)
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#autenticacao" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔐 Autenticação
-    </span>
-  </a>
   
 </li>
       
@@ -645,9 +609,9 @@
 
 <h1 id="documentacao-da-api-srs">📘 Documentação da API SRS</h1>
 <p>Bem-vindo à documentação oficial da <strong>API SRS</strong>! Aqui você encontrará informações detalhadas sobre os endpoints, autenticação e exemplos de requisições.</p>
-<h2 id="visao-geral">🔹 Visão Geral</h2>
+<h2 id="visao-geral">📍 Visão Geral</h2>
 <p>A API SRS fornece endpoints organizados por categorias, permitindo a interação com diferentes serviços, como execução de tarefas, gerenciamento de filas, autenticação, notificações e geração de relatórios.</p>
-<h3 id="estrutura-dos-endpoints"><strong>📍 Estrutura dos Endpoints</strong></h3>
+<h3 id="estrutura-dos-endpoints">🔹 <strong>Estrutura dos Endpoints</strong></h3>
 <p>Os endpoints seguem o seguinte padrão:</p>
 <pre><code>/api/&lt;tipo&gt;/&lt;acao&gt;
 </code></pre>
@@ -698,37 +662,9 @@
 <li><a href="endpoints/#relatorio-sistema"><code>/api/relatorio/relatorio_sistema</code></a> - Relatório do sistema.</li>
 <li><a href="endpoints/#relatorio-execucao"><code>/api/relatorio/relatorio_execucao</code></a> - Relatório de execuções.</li>
 </ul>
-<h3 id="funcoes-internas-administracao">🔹 Funções Internas (Administração)</h3>
-<ul>
-<li><a href="endpoints/#finalizar-execucao-interna"><code>/api/interno/finaliza_execucao</code></a> - Finaliza uma execução interna.</li>
-<li><a href="endpoints/#criar-execucao"><code>/api/interno/cria_execucao</code></a> - Cria uma nova execução interna.</li>
-<li><a href="endpoints/#criar-fila"><code>/api/interno/cria_fila</code></a> - Cria uma fila de execução.</li>
-<li><a href="endpoints/#atualizar-fila-interna"><code>/api/interno/atualiza_fila</code></a> - Atualiza uma fila interna.</li>
-<li><a href="endpoints/#registrar-log-interno"><code>/api/interno/registra_log</code></a> - Registra um log interno.</li>
-<li><a href="endpoints/#executar-agendamento"><code>/api/interno/executa_agendamento</code></a> - Executa um agendamento interno.</li>
-<li><a href="endpoints/#realocar-fila"><code>/api/interno/realoca_fila</code></a> - Realoca uma fila de processos.</li>
-<li><a href="endpoints/#novo-cliente"><code>/api/interno/novo_cliente</code></a> - Cadastra um novo cliente.</li>
-<li><a href="endpoints/#atualizar-usuario"><code>/api/interno/atualiza_usuario</code></a> - Atualiza dados de um usuário.</li>
-<li><a href="endpoints/#atualizar-maquina"><code>/api/interno/atualiza_maquina</code></a> - Atualiza informações de uma máquina.</li>
-<li><a href="endpoints/#backup-empresa"><code>/api/interno/backup_empresa</code></a> - Gera um backup da empresa.</li>
-<li><a href="endpoints/#excluir-empresa"><code>/api/interno/excluir_empresa</code></a> - Exclui uma empresa.</li>
-</ul>
-<h2 id="autenticacao">🔐 <strong>Autenticação</strong></h2>
-<p>A API SRS exige autenticação via <strong>Token</strong> para acessar a maioria dos endpoints.</p>
-<p><strong>Exemplo de cabeçalho HTTP:</strong></p>
-<pre><code class="language-sh">Authorization: Bearer SEU_TOKEN_AQUI
-</code></pre>
 <h2 id="testando-a-api">🎯 <strong>Testando a API</strong></h2>
 <p>Para testar os endpoints, você pode utilizar ferramentas como:
-- <strong>Postman</strong>
-- <strong>cURL</strong>
-- <strong>Swagger UI</strong> (se configurado)</p>
-<p><strong>Exemplo de requisição via cURL:</strong></p>
-<pre><code class="language-sh">curl -X POST &quot;http://localhost:8000/api/execucao/iniciar&quot; \
-     -H &quot;Authorization: Bearer SEU_TOKEN&quot; \
-     -H &quot;Content-Type: application/json&quot; \
-     -d '{&quot;Parametros&quot;: {&quot;chave&quot;: &quot;valor&quot;}}'
-</code></pre>
+- <strong>Postman</strong></p>
 <h2 id="mais-informacoes">📚 <strong>Mais Informações</strong></h2>
 <p>Para detalhes completos sobre cada endpoint, consulte a página <a href="endpoints/">Endpoints</a>.</p>
 

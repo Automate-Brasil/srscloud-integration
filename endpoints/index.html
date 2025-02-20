@@ -341,18 +341,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#apitarefaparametro-get" class="md-nav__link">
+  <a href="#apitarefaexecutar-post" class="md-nav__link">
     <span class="md-ellipsis">
-      🔹 /api/tarefa/parametro (GET)
+      🔹 /api/tarefa/executar (POST)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#apitarefaexecutar-post" class="md-nav__link">
+  <a href="#apitarefaparametro-post" class="md-nav__link">
     <span class="md-ellipsis">
-      🔹 /api/tarefa/executar (POST)
+      🔹 /api/tarefa/parametro (POST)
     </span>
   </a>
   
@@ -404,15 +404,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#apirelatoriorelatorio_maquina-get" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 /api/relatorio/relatorio_maquina (GET)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#apirelatoriorelatorio_sistema-get" class="md-nav__link">
     <span class="md-ellipsis">
       🔹 /api/relatorio/relatorio_sistema (GET)
@@ -431,18 +422,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#apiinternofinaliza_execucao-post" class="md-nav__link">
+  <a href="#apirelatoriorelatorio_maquina-get" class="md-nav__link">
     <span class="md-ellipsis">
-      🔹 /api/interno/finaliza_execucao (POST)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#apiinternocria_execucao-post" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 /api/interno/cria_execucao (POST)
+      🔹 /api/relatorio/relatorio_maquina (GET)
     </span>
   </a>
   
@@ -606,18 +588,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#apitarefaparametro-get" class="md-nav__link">
+  <a href="#apitarefaexecutar-post" class="md-nav__link">
     <span class="md-ellipsis">
-      🔹 /api/tarefa/parametro (GET)
+      🔹 /api/tarefa/executar (POST)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#apitarefaexecutar-post" class="md-nav__link">
+  <a href="#apitarefaparametro-post" class="md-nav__link">
     <span class="md-ellipsis">
-      🔹 /api/tarefa/executar (POST)
+      🔹 /api/tarefa/parametro (POST)
     </span>
   </a>
   
@@ -669,15 +651,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#apirelatoriorelatorio_maquina-get" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 /api/relatorio/relatorio_maquina (GET)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#apirelatoriorelatorio_sistema-get" class="md-nav__link">
     <span class="md-ellipsis">
       🔹 /api/relatorio/relatorio_sistema (GET)
@@ -696,18 +669,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#apiinternofinaliza_execucao-post" class="md-nav__link">
+  <a href="#apirelatoriorelatorio_maquina-get" class="md-nav__link">
     <span class="md-ellipsis">
-      🔹 /api/interno/finaliza_execucao (POST)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#apiinternocria_execucao-post" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔹 /api/interno/cria_execucao (POST)
+      🔹 /api/relatorio/relatorio_maquina (GET)
     </span>
   </a>
   
@@ -730,10 +694,12 @@
 
 
 <h1 id="endpoints-da-api-srs">📍 Endpoints da API SRS</h1>
-<h2 id="apiexecucaoiniciar-post">🔹 <code>/api/execucao/iniciar</code> (POST)</h2>
+<h2 id="apiexecucaoiniciar-post">🔹 <code>/api/execucao/iniciar</code> (POST)<a id="iniciar-execucao"></a></h2>
 <ul>
 <li><strong>Descrição:</strong> Inicia um novo processo de execução.</li>
-<li><strong>Parâmetros (JSON):</strong><ul>
+<li>
+<p><strong>Parâmetros (JSON):</strong></p>
+<ul>
 <li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
 <li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
 <li><code>Usuario</code> (objeto JSON, obrigatório) - Informações do usuário que inicia a execução:<ul>
@@ -752,38 +718,39 @@
 </ul>
 </li>
 <li>
-<p><strong>Exemplo de Requisição:</strong></p>
-<p><code>json
-{
-"Token": "abc123xyz",
-"EmpresaId": "empresa_001",
-"Usuario": {
-    "UsuarioId": "usr_123",
-    "NomeUsuario": "João Silva",
-    "EmailUsuario": "joao.silva@email.com",
-    "PerfilId": "admin"
-},
-"Workflow": "processo_geral",
-"Tarefa": "tarefa_001",
-"NomeMaquina": "Servidor_01",
-"Funcao": "IniciarProcesso",
-"LinhaComando": 10
-}</code></p>
+<p><strong>JSON de Exemplo:</strong></p>
 </li>
-<li>
-<p><strong>Resposta de Sucesso:</strong></p>
-<p><code>json
-{
-  "status": "sucesso",
-  "execucao_id": "12345",
-  "Parametros": { 
-    "param1": "valor1", 
-    "param2": "valor2" }
-}</code></p>
-</li>
-<li>
-<p><strong>Possíveis Erros:</strong></p>
+</ul>
+<pre><code class="language-json">  {
+    &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+    &quot;EmpresaId&quot;: &quot;empresa_001&quot;,
+    &quot;Usuario&quot;: {
+        &quot;UsuarioId&quot;: &quot;usr_123&quot;,
+        &quot;NomeUsuario&quot;: &quot;João Silva&quot;,
+        &quot;EmailUsuario&quot;: &quot;joao.silva@email.com&quot;,
+        &quot;PerfilId&quot;: &quot;admin&quot;
+    },
+    &quot;Workflow&quot;: &quot;processo_geral&quot;,
+    &quot;Tarefa&quot;: &quot;tarefa_001&quot;,
+    &quot;NomeMaquina&quot;: &quot;Servidor_01&quot;,
+    &quot;Funcao&quot;: &quot;IniciarProcesso&quot;,
+    &quot;LinhaComando&quot;: 10
+  }
+</code></pre>
 <ul>
+<li><strong>Resposta de Sucesso:</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;sucesso&quot;,
+  &quot;execucao_id&quot;: &quot;12345&quot;,
+  &quot;Parametros&quot;: { 
+    &quot;param1&quot;: &quot;valor1&quot;, 
+    &quot;param2&quot;: &quot;valor2&quot; 
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Possíveis Erros:</strong><ul>
 <li><code>400</code>: Requisição inválida.</li>
 <li><code>403</code>: Token inválido.</li>
 <li><code>401</code>: Máquina não autorizada.</li>
@@ -792,7 +759,7 @@
 </li>
 </ul>
 <hr />
-<h2 id="apiexecucaolog-post">🔹 <code>/api/execucao/log</code> (POST)</h2>
+<h2 id="apiexecucaolog-post">🔹 <code>/api/execucao/log</code> (POST)<a id="registrar-log"></a></h2>
 <ul>
 <li><strong>Descrição:</strong> Registra logs da execução.</li>
 <li><strong>Parâmetros (JSON):</strong><ul>
@@ -806,29 +773,27 @@
 <li><code>Arquivo</code> (arquivo binário, opcional) - Arquivo a ser anexado ao log.</li>
 </ul>
 </li>
-<li>
-<p><strong>Exemplo de Requisição:</strong></p>
-<p><code>json
-{
-"Token": "abc123xyz",
-"EmpresaId": "empresa_001",
-"ExecucaoId": "exec_56789",
-"Descricao": "Processo iniciado com sucesso.",
-"Status": "Log",
-"Funcao": "RegistrarEvento",
-"LinhaComando": 20
-}</code></p>
-</li>
-<li>
-<p><strong>Resposta de Sucesso:</strong></p>
-<p><code>json
-{
-  "status": "sucesso"
-}</code></p>
-</li>
-<li>
-<p><strong>Possíveis Erros:</strong></p>
+<li><strong>Exemplo de Requisição:</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+  &quot;EmpresaId&quot;: &quot;empresa_001&quot;,
+  &quot;ExecucaoId&quot;: &quot;exec_56789&quot;,
+  &quot;Descricao&quot;: &quot;Processo iniciado com sucesso.&quot;,
+  &quot;Status&quot;: &quot;Log&quot;,
+  &quot;Funcao&quot;: &quot;RegistrarEvento&quot;,
+  &quot;LinhaComando&quot;: 20
+}
+</code></pre>
 <ul>
+<li><strong>Resposta de Sucesso:</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;sucesso&quot;
+}
+</code></pre>
+<ul>
+<li><strong>Possíveis Erros:</strong><ul>
 <li><code>400</code>: Requisição inválida.</li>
 <li><code>403</code>: Token inválido.</li>
 <li><code>404</code>: Execução não encontrada.</li>
@@ -836,7 +801,7 @@
 </li>
 </ul>
 <hr />
-<h2 id="apiexecucaofinalizar-post">🔹 <code>/api/execucao/finalizar</code> (POST)</h2>
+<h2 id="apiexecucaofinalizar-post">🔹 <code>/api/execucao/finalizar</code> (POST)<a id="finalizar-execucao"></a></h2>
 <ul>
 <li><strong>Descrição:</strong> Finaliza uma execução em andamento.</li>
 <li><strong>Parâmetros (JSON):</strong><ul>
@@ -849,29 +814,27 @@
 <li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada ao encerramento.</li>
 </ul>
 </li>
-<li>
-<p><strong>Exemplo de Requisição:</strong></p>
-<p><code>json
-{
-"Token": "abc123xyz",
-"EmpresaId": "empresa_001",
-"ExecucaoId": "exec_56789",
-"Status": "Ok",
-"Descricao": "Processo finalizado com êxito.",
-"Funcao": "FinalizarProcesso",
-"LinhaComando": 30
-}</code>  </p>
-</li>
-<li>
-<p><strong>Resposta de Sucesso:</strong></p>
-<p><code>json
-{
-  "status": "finalizado"
-}</code></p>
-</li>
-<li>
-<p><strong>Possíveis Erros:</strong></p>
+<li><strong>Exemplo de Requisição:</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+  &quot;EmpresaId&quot;: &quot;empresa_001&quot;,
+  &quot;ExecucaoId&quot;: &quot;exec_56789&quot;,
+  &quot;Status&quot;: &quot;Ok&quot;,
+  &quot;Descricao&quot;: &quot;Processo finalizado com êxito.&quot;,
+  &quot;Funcao&quot;: &quot;FinalizarProcesso&quot;,
+  &quot;LinhaComando&quot;: 30
+}
+</code></pre>
 <ul>
+<li><strong>Resposta de Sucesso:</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;finalizado&quot;
+}
+</code></pre>
+<ul>
+<li><strong>Possíveis Erros:</strong><ul>
 <li><code>400</code>: Requisição inválida.</li>
 <li><code>403</code>: Token inválido.</li>
 <li><code>404</code>: Execução não encontrada.</li>
@@ -880,12 +843,10 @@
 </li>
 </ul>
 <hr />
-<h2 id="apifilainserir-post">🔹 <code>/api/fila/inserir</code> (POST)</h2>
+<h2 id="apifilainserir-post">🔹 <code>/api/fila/inserir</code> (POST)<a id="inserir-tarefa"></a></h2>
 <ul>
 <li><strong>Descrição:</strong> Insere uma nova tarefa na fila.</li>
-<li>
-<p><strong>Parâmetros (JSON):</strong></p>
-<ul>
+<li><strong>Parâmetros (JSON):</strong><ul>
 <li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
 <li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
 <li><code>Usuario</code> (objeto JSON, obrigatório) - Informações do usuário:<ul>
@@ -904,32 +865,30 @@
 <li><code>Mensagem</code> (string, opcional, padrão: <code>''</code>) - Mensagem associada à inserção da fila.</li>
 <li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função associada à inserção.</li>
 <li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada à inserção.</li>
-<li><code>Lote</code> (lista de objetos JSON, opcional) - Lista de tarefas para inserção em lote:<ul>
-<li><code>json
-        [
-            {
-                "Referencia": "valor",
-                "ParametrosEntrada": {
-                "param1": "valor1",
-                "param2": "valor2"
-                }
-            }
-        ]</code></li>
+<li><code>Lote</code> (lista de objetos JSON, opcional) - Lista de tarefas para inserção em lote:</li>
 </ul>
 </li>
 </ul>
-</li>
-<li>
-<p><strong>Resposta de Sucesso:</strong></p>
-<p><code>json
-{
-    "status": "sucesso",
-    "FilaId": "12345"
-}</code></p>
-</li>
-<li>
-<p><strong>Possíveis Erros:</strong></p>
+<pre><code class="language-json">    [
+      {
+        &quot;Referencia&quot;: &quot;valor&quot;,
+        &quot;ParametrosEntrada&quot;: {
+          &quot;param1&quot;: &quot;valor1&quot;,
+          &quot;param2&quot;: &quot;valor2&quot;
+        }
+      }
+    ]
+</code></pre>
 <ul>
+<li><strong>Resposta de Sucesso:</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;sucesso&quot;,
+  &quot;FilaId&quot;: &quot;12345&quot;
+}
+</code></pre>
+<ul>
+<li><strong>Possíveis Erros:</strong><ul>
 <li><code>400</code>: Requisição inválida.</li>
 <li><code>403</code>: Token inválido.</li>
 <li><code>404</code>: Workflow ou tarefa não encontrados.</li>
@@ -937,7 +896,7 @@
 </li>
 </ul>
 <hr />
-<h2 id="apifilaproximo-get">🔹 <code>/api/fila/proximo</code> (GET)</h2>
+<h2 id="apifilaproximo-get">🔹 <code>/api/fila/proximo</code> (GET)<a id="proxima-tarefa"></a></h2>
 <ul>
 <li><strong>Descrição:</strong> Retorna a próxima tarefa da fila.</li>
 <li><strong>Parâmetros (JSON):</strong><ul>
@@ -950,25 +909,24 @@
 <li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada à requisição.</li>
 </ul>
 </li>
-<li>
-<p><strong>Resposta de Sucesso:</strong></p>
-<p><code>json
-{
-    "status": "sucesso",
-    "Fila": [
-    {
-        "FilaId": "12345",
-        "Referencia": "valor",
-        "ParametrosEntrada": {
-        "param1": "valor1"
+<li><strong>Resposta de Sucesso:</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;sucesso&quot;,
+  &quot;Fila&quot;: 
+    [
+      {
+        &quot;FilaId&quot;: &quot;12345&quot;,
+        &quot;Referencia&quot;: &quot;valor&quot;,
+        &quot;ParametrosEntrada&quot;: {
+          &quot;param1&quot;: &quot;valor1&quot;
         }
-    }
+      }
     ]
-}</code></p>
-</li>
-<li>
-<p><strong>Possíveis Erros:</strong></p>
+}
+</code></pre>
 <ul>
+<li><strong>Possíveis Erros:</strong><ul>
 <li><code>400</code>: Requisição inválida.</li>
 <li><code>403</code>: Token inválido.</li>
 <li><code>404</code>: Nenhuma tarefa disponível.</li>
@@ -976,7 +934,7 @@
 </li>
 </ul>
 <hr />
-<h2 id="apifilaatualizar-post">🔹 <code>/api/fila/atualizar</code> (POST)</h2>
+<h2 id="apifilaatualizar-post">🔹 <code>/api/fila/atualizar</code> (POST)<a id="atualizar-tarefa"></a></h2>
 <ul>
 <li><strong>Descrição:</strong> Atualiza o status de uma tarefa na fila.</li>
 <li><strong>Parâmetros (JSON):</strong><ul>
@@ -989,33 +947,31 @@
 <li><code>Mensagem</code> (string, opcional) - Mensagem associada à atualização.</li>
 <li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função associada à atualização.</li>
 <li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada à atualização.</li>
-<li><code>Lote</code> (lista de objetos JSON, opcional) - Lista de atualizações para múltiplas filas:<ul>
-<li><code>json
-    [
-    {
-        "FilaId": "12345",
-        "Status": "FilaOk",
-        "ParametrosSaida": {
-        "resultado": "sucesso"
+<li><code>Lote</code> (lista de objetos JSON, opcional) - Lista de atualizações para múltiplas filas:</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-json">    [
+      {
+        &quot;FilaId&quot;: &quot;12345&quot;,
+        &quot;Status&quot;: &quot;FilaOk&quot;,
+        &quot;ParametrosSaida&quot;: {
+          &quot;resultado&quot;: &quot;sucesso&quot;
         },
-        "Mensagem": "Tarefa concluída."
-    }
-    ]</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>Resposta de Sucesso:</strong></p>
-<p><code>json
-{
-    "status": "sucesso",
-    "Mensagem": "Atualização realizada com sucesso"
-}</code></p>
-</li>
-<li>
-<p><strong>Possíveis Erros:</strong></p>
+        &quot;Mensagem&quot;: &quot;Tarefa concluída.&quot;
+      }
+    ]
+</code></pre>
 <ul>
+<li><strong>Resposta de Sucesso:</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;sucesso&quot;,
+  &quot;Mensagem&quot;: &quot;Atualização realizada com sucesso&quot;
+}
+</code></pre>
+<ul>
+<li><strong>Possíveis Erros:</strong><ul>
 <li><code>400</code>: Requisição inválida.</li>
 <li><code>403</code>: Token inválido.</li>
 <li><code>404</code>: Tarefa não encontrada.</li>
@@ -1023,133 +979,1349 @@
 </li>
 </ul>
 <hr />
-<h2 id="apifilaconsultar-get">🔹 <code>/api/fila/consultar</code> (GET)</h2>
+<h2 id="apifilaconsultar-get">🔹 <code>/api/fila/consultar</code> (GET)<a id="consultar-fila)"></a></h2>
 <ul>
 <li><strong>Descrição:</strong> Consulta o estado atual da fila.</li>
-<li><strong>Parâmetros (JSON):</strong></li>
+<li>
+<p><strong>Parâmetros (JSON):</strong></p>
+<ul>
 <li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
 <li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
 <li><code>ExecucaoId</code> (string, obrigatório) - Identificador da execução associada à fila.</li>
 <li><code>Workflow</code> (string, obrigatório) - Nome do workflow da tarefa.</li>
 <li><code>Tarefa</code> (string, obrigatório) - Nome da tarefa.</li>
-<li><code>Criterios</code> (objeto JSON, obrigatório) - Critérios de busca no formato MongoDB:
-    <code>json
-    [
-      {
-        "StatusId": { "$eq": 1 }
-      }
-    ]</code></li>
-<li><code>OrderBy</code> (string, opcional) - Campo para ordenação.</li>
+<li>
+<p><code>Criterios</code> (objeto JSON, obrigatório) - Critérios de busca no formato MongoDB:</p>
+<ul>
+<li><code>json
+  [
+    {
+      "StatusId": { "$eq": 1 }
+    }
+  ]</code></li>
+</ul>
+</li>
+<li>
+<p><code>OrderBy</code> (string, opcional) - Campo para ordenação.</p>
+</li>
 <li><code>Limite</code> (int, opcional, padrão: <code>100</code>) - Número máximo de resultados (máximo permitido: 100).</li>
 <li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função associada à consulta.</li>
 <li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada à consulta.</li>
-<li><strong>Resposta de Sucesso:</strong>
-  <code>json
-  {
-    "status": "sucesso",
-    "Fila": [
-      {
-        "FilaId": "12345",
-        "Status": "EmExecucao",
-        "Referencia": "valor"
-      }
-    ]
-  }</code></li>
-<li><strong>Possíveis Erros:</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>Resposta de Sucesso:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;sucesso&quot;,
+  &quot;Fila&quot;: [
+    {
+      &quot;FilaId&quot;: &quot;12345&quot;,
+      &quot;Status&quot;: &quot;EmExecucao&quot;,
+      &quot;Referencia&quot;: &quot;valor&quot;
+    }
+  ]
+}
+</code></pre>
+<ul>
+<li><strong>Possíveis Erros:</strong><ul>
 <li><code>400</code>: Requisição inválida.</li>
 <li><code>403</code>: Token inválido.</li>
 <li><code>404</code>: Nenhuma tarefa encontrada.</li>
 </ul>
-<h2 id="apicredencialobter-get">🔹 <code>/api/credencial/obter</code> (GET)</h2>
-<ul>
-<li><strong>Descrição:</strong> Obtém credenciais de um usuário.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
+</li>
 </ul>
-<h2 id="apicredencialatualizar-post">🔹 <code>/api/credencial/atualizar</code> (POST)</h2>
+<hr />
+<h2 id="apicredencialobter-get">🔹 <code>/api/credencial/obter</code>  (GET)<a id="obter-credencial"></a></h2>
 <ul>
-<li><strong>Descrição:</strong> Atualiza credenciais de um usuário.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
-<li><code>Usuario</code> (string, obrigatório)</li>
-<li><code>NovaSenha</code> (string, obrigatório)</li>
+<li>
+<p><strong>Descrição:</strong> Obtém as credenciais de um usuário autorizado.</p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>Usuario</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação do usuário para o qual as credenciais serão recuperadas.</td>
+</tr>
+<tr>
+<td><code>Sistema</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome do sistema ao qual a credencial pertence.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>Exemplo de Resposta</strong></p>
+</li>
 </ul>
-<h2 id="apitarefaparametro-get">🔹 <code>/api/tarefa/parametro</code> (GET)</h2>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;sucesso&quot;,
+  &quot;credencial&quot;: {
+    &quot;Usuario&quot;: &quot;usuario_001&quot;,
+    &quot;Sistema&quot;: &quot;sistema_x&quot;,
+    &quot;Login&quot;: &quot;usuario_x&quot;,
+    &quot;Senha&quot;: &quot;********&quot;,
+    &quot;ExpiraEm&quot;: &quot;2025-12-31&quot;
+  }
+}
+</code></pre>
 <ul>
-<li><strong>Descrição:</strong> Obtém parâmetros de uma tarefa.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
-<li><code>TarefaID</code> (int, obrigatório)</li>
+<li>
+<p><strong>Possíveis Erros</strong></p>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Mensagem</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code></td>
+<td><code>Unauthorized</code></td>
+<td>Token ausente ou inválido.</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>Credencial não encontrada</code></td>
+<td>O usuário ou sistema informado não possui credenciais cadastradas.</td>
+</tr>
+</tbody>
+</table>
+</li>
 </ul>
-<h2 id="apitarefaexecutar-post">🔹 <code>/api/tarefa/executar</code> (POST)</h2>
+<hr />
+<h2 id="apicredencialatualizar-post"><strong>🔹 <code>/api/credencial/atualizar</code></strong>  (POST)<a id="atualizar-credencial"></a></h2>
 <ul>
-<li><strong>Descrição:</strong> Executa uma tarefa específica.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
-<li><code>TarefaID</code> (int, obrigatório)</li>
+<li>
+<p><strong>Descrição:</strong> Atualiza a credencial de um usuário autorizado.</p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>Usuario</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação do usuário cuja credencial será atualizada.</td>
+</tr>
+<tr>
+<td><code>Sistema</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome do sistema ao qual a credencial pertence.</td>
+</tr>
+<tr>
+<td><code>NovaSenha</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nova senha a ser definida para o usuário.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>JSON de Exemplo</strong></p>
+</li>
 </ul>
-<h2 id="apitelaabrir-post">🔹 <code>/api/tela/abrir</code> (POST)</h2>
+<pre><code class="language-json">{
+  &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+  &quot;Usuario&quot;: &quot;usuario_001&quot;,
+  &quot;Sistema&quot;: &quot;sistema_x&quot;,
+  &quot;NovaSenha&quot;: &quot;nova_senha_segura&quot;
+}
+</code></pre>
 <ul>
-<li><strong>Descrição:</strong> Abre uma interface específica.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
-<li><code>Tela</code> (string, obrigatório)</li>
+<li><strong>Exemplo de Resposta</strong></li>
 </ul>
-<h2 id="apicertificadoobter-get">🔹 <code>/api/certificado/obter</code> (GET)</h2>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;sucesso&quot;,
+  &quot;mensagem&quot;: &quot;Credencial atualizada com sucesso.&quot;
+}
+</code></pre>
 <ul>
-<li><strong>Descrição:</strong> Obtém informações de um certificado.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
+<li>
+<p><strong>Possíveis Erros</strong></p>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Mensagem</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code></td>
+<td><code>Unauthorized</code></td>
+<td>Token ausente ou inválido.</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td><code>Acesso negado</code></td>
+<td>O usuário autenticado não tem permissão para alterar esta credencial.</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td><code>Requisição inválida</code></td>
+<td>Dados ausentes ou mal formatados na requisição.</td>
+</tr>
+</tbody>
+</table>
+</li>
 </ul>
-<h2 id="apinotificacaonotificar-post">🔹 <code>/api/notificacao/notificar</code> (POST)</h2>
+<hr />
+<h2 id="apitarefaexecutar-post"><strong>🔹 <code>/api/tarefa/executar</code></strong>  (POST)<a id="executar-tarefa"></a></h2>
 <ul>
-<li><strong>Descrição:</strong> Envia uma notificação para um usuário.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
-<li><code>Mensagem</code> (string, obrigatório)</li>
+<li>
+<p><strong>Descrição:</strong> Inicia a execução de uma tarefa específica.</p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>EmpresaId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação da empresa.</td>
+</tr>
+<tr>
+<td><code>Usuario</code></td>
+<td>objeto</td>
+<td>✅ Sim</td>
+<td>Informações do usuário que está acionando a tarefa.</td>
+</tr>
+<tr>
+<td><code>Workflow</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome do fluxo de trabalho vinculado à tarefa.</td>
+</tr>
+<tr>
+<td><code>Tarefa</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome da tarefa a ser executada.</td>
+</tr>
+<tr>
+<td><code>Maquina</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome do servidor/máquina onde a tarefa será executada.</td>
+</tr>
+<tr>
+<td><code>FilaId</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>ID da fila de execução (se aplicável).</td>
+</tr>
+<tr>
+<td><code>ExecucaoId</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>ID de uma execução existente (caso a tarefa seja parte de um fluxo maior).</td>
+</tr>
+<tr>
+<td><code>Funcao</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>Nome da função responsável pela execução.</td>
+</tr>
+<tr>
+<td><code>LinhaComando</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>Número de referência de linha de comando.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>JSON de Exemplo</strong></p>
+</li>
 </ul>
-<h2 id="apirelatoriorelatorio_atividade-get">🔹 <code>/api/relatorio/relatorio_atividade</code> (GET)</h2>
+<pre><code class="language-json">{
+  &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+  &quot;EmpresaId&quot;: &quot;empresa_001&quot;,
+  &quot;Usuario&quot;: {
+    &quot;UsuarioId&quot;: &quot;user_123&quot;,
+    &quot;NomeUsuario&quot;: &quot;Renato&quot;,
+    &quot;EmailUsuario&quot;: &quot;renato@email.com&quot;,
+    &quot;PerfilId&quot;: &quot;admin&quot;
+  },
+  &quot;Workflow&quot;: &quot;processo_financeiro&quot;,
+  &quot;Tarefa&quot;: &quot;validar_pagamento&quot;,
+  &quot;Maquina&quot;: &quot;Servidor_01&quot;,
+  &quot;FilaId&quot;: &quot;fila_12345&quot;,
+  &quot;ExecucaoId&quot;: &quot;exec_67890&quot;,
+  &quot;Funcao&quot;: &quot;ExecutarValidacao&quot;,
+  &quot;LinhaComando&quot;: 10
+}
+</code></pre>
 <ul>
-<li><strong>Descrição:</strong> Gera um relatório de atividades.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
+<li><strong>Exemplo de Resposta</strong></li>
 </ul>
-<h2 id="apirelatoriorelatorio_auditoria-get">🔹 <code>/api/relatorio/relatorio_auditoria</code> (GET)</h2>
+<pre><code class="language-json">{
+  &quot;Autorizado&quot;: true,
+  &quot;Mensagem&quot;: &quot;Acionamento da tarefa validar_pagamento direcionado para a máquina Servidor_01 a partir da API webservice.&quot;
+}
+</code></pre>
 <ul>
-<li><strong>Descrição:</strong> Gera um relatório de auditoria.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
+<li>
+<p><strong>Possíveis Erros</strong></p>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Mensagem</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code></td>
+<td><code>Unauthorized</code></td>
+<td>Token ausente ou inválido.</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td><code>Acesso negado</code></td>
+<td>O usuário não tem permissão para executar a tarefa.</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td><code>Parâmetros inválidos</code></td>
+<td>Algum parâmetro essencial está ausente ou mal formatado.</td>
+</tr>
+</tbody>
+</table>
+</li>
 </ul>
-<h2 id="apirelatoriorelatorio_maquina-get">🔹 <code>/api/relatorio/relatorio_maquina</code> (GET)</h2>
+<h2 id="apitarefaparametro-post"><strong>🔹 <code>/api/tarefa/parametro</code></strong>  (POST)<a id="obter-parametro"></a></h2>
 <ul>
-<li><strong>Descrição:</strong> Gera um relatório de máquinas.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
+<li>
+<p><strong>Descrição:</strong> Atualiza um parâmetro de uma tarefa já cadastrada.</p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>EmpresaId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação da empresa.</td>
+</tr>
+<tr>
+<td><code>Usuario</code></td>
+<td>objeto</td>
+<td>✅ Sim</td>
+<td>Informações do usuário que está realizando a atualização.</td>
+</tr>
+<tr>
+<td><code>Workflow</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome do fluxo de trabalho vinculado à tarefa.</td>
+</tr>
+<tr>
+<td><code>Tarefa</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome da tarefa a ser alterada.</td>
+</tr>
+<tr>
+<td><code>Parametro</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome do parâmetro que será atualizado.</td>
+</tr>
+<tr>
+<td><code>Valor</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Novo valor para o parâmetro.</td>
+</tr>
+<tr>
+<td><code>ExecucaoId</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>ID da execução vinculada à alteração.</td>
+</tr>
+<tr>
+<td><code>Funcao</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>Nome da função que está alterando o parâmetro.</td>
+</tr>
+<tr>
+<td><code>LinhaComando</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>Número de referência de linha de comando.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>JSON de Exemplo</strong></p>
+</li>
 </ul>
-<h2 id="apirelatoriorelatorio_sistema-get">🔹 <code>/api/relatorio/relatorio_sistema</code> (GET)</h2>
+<pre><code class="language-json">{
+  &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+  &quot;EmpresaId&quot;: &quot;empresa_001&quot;,
+  &quot;Usuario&quot;: {
+    &quot;UsuarioId&quot;: &quot;user_123&quot;,
+    &quot;NomeUsuario&quot;: &quot;Renato&quot;,
+    &quot;PerfilId&quot;: &quot;admin&quot;
+  },
+  &quot;Workflow&quot;: &quot;processo_financeiro&quot;,
+  &quot;Tarefa&quot;: &quot;validar_pagamento&quot;,
+  &quot;Parametro&quot;: &quot;valor_minimo&quot;,
+  &quot;Valor&quot;: &quot;5000&quot;,
+  &quot;ExecucaoId&quot;: &quot;exec_67890&quot;,
+  &quot;Funcao&quot;: &quot;AtualizarParametro&quot;,
+  &quot;LinhaComando&quot;: 12
+}
+</code></pre>
 <ul>
-<li><strong>Descrição:</strong> Gera um relatório do sistema.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
+<li><strong>Exemplo de Resposta</strong></li>
 </ul>
-<h2 id="apirelatoriorelatorio_execucao-get">🔹 <code>/api/relatorio/relatorio_execucao</code> (GET)</h2>
+<pre><code class="language-json">{
+  &quot;Autorizado&quot;: true,
+  &quot;Mensagem&quot;: &quot;Parâmetro 'valor_minimo' da tarefa 'validar_pagamento' foi atualizado para '5000'.&quot;
+}
+</code></pre>
 <ul>
-<li><strong>Descrição:</strong> Gera um relatório de execuções.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
+<li>
+<p><strong>Possíveis Erros</strong></p>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Mensagem</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code></td>
+<td><code>Unauthorized</code></td>
+<td>Token ausente ou inválido.</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td><code>Acesso negado</code></td>
+<td>O usuário não tem permissão para alterar esse parâmetro.</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td><code>Parâmetro não autorizado</code></td>
+<td>O parâmetro informado não pode ser alterado via API.</td>
+</tr>
+</tbody>
+</table>
+</li>
 </ul>
-<h2 id="apiinternofinaliza_execucao-post">🔹 <code>/api/interno/finaliza_execucao</code> (POST)</h2>
+<hr />
+<h2 id="apitelaabrir-post">🔹 <code>/api/tela/abrir</code> (POST)<a id="abrir-tela"></a></h2>
 <ul>
-<li><strong>Descrição:</strong> Finaliza uma execução interna.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
+<li>
+<p><strong>Descrição:</strong> Envia um comando para abrir uma tela específica em uma máquina remota.</p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>EmpresaId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação da empresa.</td>
+</tr>
+<tr>
+<td><code>UsuarioId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação do usuário que está solicitando a abertura da tela.</td>
+</tr>
+<tr>
+<td><code>MaquinaServer</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome da máquina que enviará o comando.</td>
+</tr>
+<tr>
+<td><code>MaquinaClient</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome da máquina onde a tela será aberta.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>Exemplo de Requisição em Python</strong></p>
+</li>
 </ul>
-<h2 id="apiinternocria_execucao-post">🔹 <code>/api/interno/cria_execucao</code> (POST)</h2>
+<pre><code class="language-python">import requests
+
+url = &quot;https://&lt;srs-dominio&gt;/api/tela/abrir&quot;
+payload = {
+  &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+  &quot;EmpresaId&quot;: &quot;empresa_001&quot;, 
+  &quot;UsuarioId&quot;: &quot;user_123&quot;,
+  &quot;MaquinaServer&quot;: &quot;Servidor_01&quot;, 
+  &quot;MaquinaClient&quot;: &quot;PC_Cliente_02&quot;}
+
+response = requests.post(url, data=payload)
+print(response.json())
+</code></pre>
 <ul>
-<li><strong>Descrição:</strong> Cria uma nova execução interna.</li>
-<li><strong>Parâmetros:</strong></li>
-<li><code>Token</code> (string, obrigatório)</li>
+<li><strong>Exemplo de Resposta</strong></li>
 </ul>
+<pre><code class="language-json">{
+  &quot;Autorizado&quot;: true,
+  &quot;Mensagem&quot;: &quot;Ordem enviada para a máquina: (Servidor_01)!&quot;
+}
+</code></pre>
+<ul>
+<li>
+<p><strong>Possíveis Erros</strong></p>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Mensagem</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code></td>
+<td><code>Unauthorized</code></td>
+<td>Token ausente ou inválido.</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td><code>Acesso negado</code></td>
+<td>O usuário autenticado não tem permissão para abrir telas remotamente.</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td><code>Máquina não identificada</code></td>
+<td>Um ou ambos os parâmetros <code>MaquinaServer</code> e <code>MaquinaClient</code> não foram informados ou são inválidos.</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>Máquina não encontrada</code></td>
+<td>A máquina informada não está ativa ou registrada no sistema.</td>
+</tr>
+<tr>
+<td><code>500</code></td>
+<td><code>Erro interno</code></td>
+<td>Ocorreu um erro inesperado ao processar a solicitação.</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<hr />
+<h2 id="apicertificadoobter-get">🔹 <code>/api/certificado/obter</code> (GET)<a id="obter-certificado"></a></h2>
+<ul>
+<li>
+<p><strong>Descrição:</strong> Obtém um certificado digital associado a um sistema específico.</p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>ExecucaoId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>ID da execução associada à requisição.</td>
+</tr>
+<tr>
+<td><code>EmpresaId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação da empresa.</td>
+</tr>
+<tr>
+<td><code>Sistema</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome do sistema ao qual o certificado pertence.</td>
+</tr>
+<tr>
+<td><code>AliasCertificado</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Nome do alias do certificado a ser obtido.</td>
+</tr>
+<tr>
+<td><code>Funcao</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>Nome da função solicitante.</td>
+</tr>
+<tr>
+<td><code>LinhaComando</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>Número de referência de linha de comando.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>Exemplo de Requisição em Python</strong></p>
+</li>
+</ul>
+<pre><code class="language-python">import requests
+
+url = &quot;https://&lt;srs-dominio&gt;/api/certificado/obter&quot;
+params = {
+    &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+    &quot;ExecucaoId&quot;: &quot;exec_12345&quot;,
+    &quot;EmpresaId&quot;: &quot;empresa_001&quot;,
+    &quot;Sistema&quot;: &quot;sistema_x&quot;,
+    &quot;AliasCertificado&quot;: &quot;cert_abc&quot;
+}
+response = requests.get(url, params=params)
+print(response.json())
+</code></pre>
+<ul>
+<li><strong>Exemplo de Resposta</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;Autorizado&quot;: true,
+  &quot;Mensagem&quot;: &quot;Certificado cert_abc do sistema Sistema X concedido&quot;,
+  &quot;Sistema&quot;: {
+    &quot;NomeSistema&quot;: &quot;Sistema X&quot;
+  },
+  &quot;Credencial&quot;: &quot;Credencial de Segurança&quot;,
+  &quot;Certificado&quot;: &quot;https://api.srs.com/downloads/cert_abc.pfx&quot;,
+  &quot;Acesso&quot;: {
+    &quot;login&quot;: &quot;usuario_x&quot;,
+    &quot;senha&quot;: &quot;********&quot;
+  }
+}
+</code></pre>
+<ul>
+<li>
+<p><strong>Possíveis Erros</strong></p>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Mensagem</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code></td>
+<td><code>Unauthorized</code></td>
+<td>Token ausente ou inválido.</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td><code>Acesso negado</code></td>
+<td>O usuário autenticado não tem permissão para acessar este certificado.</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>Certificado não encontrado</code></td>
+<td>O alias do certificado informado não existe ou não está disponível.</td>
+</tr>
+<tr>
+<td><code>500</code></td>
+<td><code>Erro interno</code></td>
+<td>Ocorreu um erro inesperado ao processar a solicitação.</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<hr />
+<h2 id="apinotificacaonotificar-post">🔹 <code>/api/notificacao/notificar</code> (POST)<a id="enviar-notificacao"></a></h2>
+<ul>
+<li>
+<p><strong>Descrição:</strong> Envia uma notificação para um ou mais usuários por diferentes canais. A API SRS permite enviar notificações para usuários via <strong>WhatsApp, Teams, Email ou Portal</strong>. </p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>ExecucaoId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>ID da execução associada à notificação.</td>
+</tr>
+<tr>
+<td><code>EmpresaId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação da empresa.</td>
+</tr>
+<tr>
+<td><code>Assunto</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Assunto da notificação.</td>
+</tr>
+<tr>
+<td><code>Mensagem</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Conteúdo da mensagem a ser enviada.</td>
+</tr>
+<tr>
+<td><code>Canal</code></td>
+<td>lista</td>
+<td>✅ Sim</td>
+<td>Canais de envio (<code>Whatsapp</code>, <code>Teams</code>, <code>Email</code>, <code>Portal</code>).</td>
+</tr>
+<tr>
+<td><code>Destino</code></td>
+<td>lista</td>
+<td>✅ Sim</td>
+<td>Lista de destinatários (<code>UsuarioId</code> ou <code>Token</code>).</td>
+</tr>
+<tr>
+<td><code>Confidencial</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>Define se a mensagem é confidencial (<code>0</code> = Não, <code>1</code> = Sim).</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Exemplo de Requisição em Python</strong></li>
+</ul>
+<pre><code class="language-python">import requests
+
+url = &quot;https://&lt;srs-dominio&gt;/api/notificacao/notificar&quot;
+payload = {
+    &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+    &quot;ExecucaoId&quot;: &quot;exec_12345&quot;,
+    &quot;EmpresaId&quot;: &quot;empresa_001&quot;,
+    &quot;Assunto&quot;: &quot;Atualização do Sistema&quot;,
+    &quot;Mensagem&quot;: &quot;O sistema será atualizado hoje às 23h.&quot;,
+    &quot;Canal&quot;: [&quot;Email&quot;, &quot;Teams&quot;],
+    &quot;Destino&quot;: [{&quot;UsuarioId&quot;: &quot;user_123&quot;}, {&quot;Token&quot;: &quot;abcd-efgh-ijkl&quot;}],
+    &quot;Confidencial&quot;: 1
+}
+
+response = requests.post(url, data=payload)
+print(response.json())
+</code></pre>
+<ul>
+<li><strong>Exemplo de Resposta</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;Autorizado&quot;: true,
+  &quot;Mensagem&quot;: &quot;Enviado com sucesso.&quot;,
+  &quot;Erro&quot;: []
+}
+</code></pre>
+<ul>
+<li>
+<p><strong>Possíveis Erros</strong></p>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Mensagem</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code></td>
+<td><code>Unauthorized</code></td>
+<td>Token ausente ou inválido.</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td><code>Acesso negado</code></td>
+<td>O usuário autenticado não tem permissão para enviar notificações.</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td><code>Parâmetros inválidos</code></td>
+<td>Algum parâmetro essencial está ausente ou mal formatado.</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>Usuário não encontrado</code></td>
+<td>Nenhum usuário válido foi identificado nos destinatários.</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<hr />
+<h2 id="apirelatoriorelatorio_atividade-get">🔹 <code>/api/relatorio/relatorio_atividade</code> (GET)<a id="relatorio-atividade"></a></h2>
+<ul>
+<li>
+<p><strong>Descrição:</strong> Gera um relatório das atividades executadas dentro de um período.</p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>EmpresaId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação da empresa.</td>
+</tr>
+<tr>
+<td><code>DataInicio</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Data de início (formato <code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td><code>DataFim</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Data de fim (formato <code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td><code>Pagina</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>Número da página de resultados.</td>
+</tr>
+<tr>
+<td><code>Limite</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>Número máximo de registros por página (padrão: <code>1000</code>).</td>
+</tr>
+<tr>
+<td><code>StatusId</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>ID do status da atividade.</td>
+</tr>
+<tr>
+<td><code>Workflow</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>Nome do workflow a ser filtrado.</td>
+</tr>
+<tr>
+<td><code>Tarefa</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>Nome da tarefa específica.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Exemplo de Resposta</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;Autorizado&quot;: true,
+  &quot;Pagina&quot;: 0,
+  &quot;Limite&quot;: 1000,
+  &quot;Mensagem&quot;: &quot;&quot;,
+  &quot;Dados&quot;: [
+    {
+      &quot;FilaId&quot;: &quot;12345&quot;,
+      &quot;StatusId&quot;: 1,
+      &quot;StatusAlias&quot;: &quot;Concluído&quot;,
+      &quot;Referencia&quot;: &quot;Tarefa A&quot;,
+      &quot;DataInclusao&quot;: &quot;2025-01-10 14:30:00&quot;,
+      &quot;DataInicioExecucao&quot;: &quot;2025-01-10 14:35:00&quot;,
+      &quot;DataFimExecucao&quot;: &quot;2025-01-10 14:50:00&quot;,
+      &quot;TempoExecucao&quot;: 15.0
+    }
+  ]
+}
+</code></pre>
+<h2 id="apirelatoriorelatorio_auditoria-get">🔹 <code>/api/relatorio/relatorio_auditoria</code> (GET)<a id="relatorio-auditoria"></a></h2>
+<ul>
+<li>
+<p><strong>Descrição:</strong> Gera um relatório de auditoria de ações realizadas pelos usuários.</p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>EmpresaId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação da empresa.</td>
+</tr>
+<tr>
+<td><code>DataInicio</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Data de início (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td><code>DataFim</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Data de fim (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td><code>EmailUsuario</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>Filtrar auditoria por e-mail do usuário.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>Exemplo de Resposta</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;Autorizado&quot;: true,
+  &quot;Mensagem&quot;: &quot;&quot;,
+  &quot;Dados&quot;: [
+    {
+      &quot;Data&quot;: &quot;2025-01-15 10:30:00&quot;,
+      &quot;UsuarioId&quot;: &quot;user_123&quot;,
+      &quot;NomeUsuario&quot;: &quot;Renato&quot;,
+      &quot;EmailUsuario&quot;: &quot;renato@email.com&quot;,
+      &quot;Acao&quot;: &quot;Alteração de credenciais&quot;,
+      &quot;Detalhes&quot;: &quot;Usuário alterou credencial de acesso ao sistema.&quot;
+    }
+  ]
+}
+</code></pre>
+<h2 id="apirelatoriorelatorio_sistema-get">🔹 <code>/api/relatorio/relatorio_sistema</code> (GET)<a id="relatorio-sistema"></a></h2>
+<ul>
+<li>
+<p><strong>Descrição:</strong> Retorna informações detalhadas sobre os sistemas integrados.</p>
+</li>
+<li>
+<p><strong>Exemplo de Requisição em Python</strong></p>
+</li>
+</ul>
+<pre><code class="language-python">import requests
+
+url = &quot;https://&lt;srs-dominio&gt;/api/relatorio/relatorio_atividade&quot;
+params = {
+    &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+    &quot;EmpresaId&quot;: &quot;empresa_001&quot;,
+    &quot;DataInicio&quot;: &quot;2025-01-01&quot;,
+    &quot;DataFim&quot;: &quot;2025-01-31&quot;
+}
+
+response = requests.get(url, params=params)
+print(response.json())
+</code></pre>
+<h2 id="apirelatoriorelatorio_execucao-get">🔹 <code>/api/relatorio/relatorio_execucao</code> (GET)<a id="relatorio-execucao"></a></h2>
+<ul>
+<li>
+<p><strong>Descrição:</strong> Retorna um relatório detalhado sobre as execuções de tarefas dentro de um período.</p>
+</li>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>EmpresaId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação da empresa.</td>
+</tr>
+<tr>
+<td><code>DataInicio</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Data de início do relatório (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td><code>DataFim</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Data de fim do relatório (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td><code>Pagina</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>Número da página para paginação.</td>
+</tr>
+<tr>
+<td><code>Limite</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>Número máximo de registros por página (padrão: <code>1000</code>).</td>
+</tr>
+<tr>
+<td><code>StatusId</code></td>
+<td>int</td>
+<td>❌ Não</td>
+<td>Filtrar execuções por status específico.</td>
+</tr>
+<tr>
+<td><code>Workflow</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>Filtrar execuções por workflow.</td>
+</tr>
+<tr>
+<td><code>Tarefa</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>Filtrar execuções por nome da tarefa.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Exemplo de Resposta</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;Autorizado&quot;: true,
+  &quot;Pagina&quot;: 0,
+  &quot;Limite&quot;: 1000,
+  &quot;Mensagem&quot;: &quot;&quot;,
+  &quot;Dados&quot;: [
+    {
+      &quot;ExecucaoId&quot;: &quot;exec_12345&quot;,
+      &quot;Workflow&quot;: &quot;processo_financeiro&quot;,
+      &quot;Tarefa&quot;: &quot;validar_pagamento&quot;,
+      &quot;Status&quot;: &quot;Concluído&quot;,
+      &quot;DataInicioExecucao&quot;: &quot;2025-01-10 14:35:00&quot;,
+      &quot;DataFimExecucao&quot;: &quot;2025-01-10 14:50:00&quot;,
+      &quot;TempoExecucao&quot;: 15.0,
+      &quot;Maquina&quot;: &quot;Servidor_01&quot;,
+      &quot;Usuario&quot;: {
+        &quot;UsuarioId&quot;: &quot;user_123&quot;,
+        &quot;NomeUsuario&quot;: &quot;Renato&quot;,
+        &quot;EmailUsuario&quot;: &quot;renato@email.com&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<ul>
+<li><strong>Possíveis Erros</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Mensagem</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code></td>
+<td><code>Unauthorized</code></td>
+<td>Token ausente ou inválido.</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td><code>Acesso negado</code></td>
+<td>O usuário autenticado não tem permissão para acessar este relatório.</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td><code>Parâmetros inválidos</code></td>
+<td>Algum parâmetro essencial está ausente ou mal formatado.</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>Nenhuma execução encontrada</code></td>
+<td>Não há registros dentro do período solicitado.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="apirelatoriorelatorio_maquina-get">🔹 <code>/api/relatorio/relatorio_maquina</code> (GET)<a id="relatorio-maquina"></a></h2>
+<p><strong>Descrição:</strong> Retorna um relatório detalhado sobre o uso de máquinas no ambiente de execução.</p>
+<ul>
+<li>
+<p><strong>Parâmetros de Entrada</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Tipo</th>
+<th>Obrigatório</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Token</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Token de autenticação para acessar a API.</td>
+</tr>
+<tr>
+<td><code>EmpresaId</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Identificação da empresa.</td>
+</tr>
+<tr>
+<td><code>DataInicio</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Data de início (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td><code>DataFim</code></td>
+<td>string</td>
+<td>✅ Sim</td>
+<td>Data de fim (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td><code>Maquina</code></td>
+<td>string</td>
+<td>❌ Não</td>
+<td>Nome de uma máquina específica para filtrar o relatório.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>Exemplo de Requisição em Python</strong></p>
+</li>
+</ul>
+<pre><code class="language-python">import requests
+
+url = &quot;https://&lt;srs-dominio&gt;/api/relatorio/relatorio_execucao&quot;
+params = {
+   &quot;Token&quot;: &quot;Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
+    &quot;EmpresaId&quot;: &quot;empresa_001&quot;,
+    &quot;DataInicio&quot;: &quot;2025-01-01&quot;,
+    &quot;DataFim&quot;: &quot;2025-01-31&quot;
+}
+
+response = requests.get(url, params=params)
+print(response.json())
+</code></pre>
+<ul>
+<li><strong>Exemplo de Resposta</strong></li>
+</ul>
+<pre><code class="language-json">{
+  &quot;Autorizado&quot;: true,
+  &quot;Mensagem&quot;: &quot;&quot;,
+  &quot;Dados&quot;: [
+    {
+      &quot;Maquina&quot;: &quot;Servidor_01&quot;,
+      &quot;TotalTarefasExecutadas&quot;: 150,
+      &quot;TempoTotalExecucao&quot;: 480.5,
+      &quot;Status&quot;: &quot;Ativa&quot;,
+      &quot;UltimaExecucao&quot;: &quot;2025-01-29 18:45:00&quot;
+    },
+    {
+      &quot;Maquina&quot;: &quot;PC_Cliente_02&quot;,
+      &quot;TotalTarefasExecutadas&quot;: 45,
+      &quot;TempoTotalExecucao&quot;: 125.0,
+      &quot;Status&quot;: &quot;Ociosa&quot;,
+      &quot;UltimaExecucao&quot;: &quot;2025-01-25 15:30:00&quot;
+    }
+  ]
+}
+</code></pre>
+<ul>
+<li><strong>Possíveis Erros</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Mensagem</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401</code></td>
+<td><code>Unauthorized</code></td>
+<td>Token ausente ou inválido.</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td><code>Acesso negado</code></td>
+<td>O usuário autenticado não tem permissão para acessar este relatório.</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td><code>Parâmetros inválidos</code></td>
+<td>Algum parâmetro essencial está ausente ou mal formatado.</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>Nenhuma máquina encontrada</code></td>
+<td>Não há registros de máquinas dentro do período solicitado.</td>
+</tr>
+</tbody>
+</table>
 
 
 
