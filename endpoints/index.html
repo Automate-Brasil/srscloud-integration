@@ -1,0 +1,1206 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../auth/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
+    
+    
+      
+        <title>Endpoints - API SRS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.8608ea7d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#endpoints-da-api-srs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="API SRS" class="md-header__button md-logo" aria-label="API SRS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            API SRS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Endpoints
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="API SRS" class="md-nav__button md-logo" aria-label="API SRS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    API SRS
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Início
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Endpoints
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Endpoints
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#apiexecucaoiniciar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/execucao/iniciar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apiexecucaolog-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/execucao/log (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apiexecucaofinalizar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/execucao/finalizar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apifilainserir-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/fila/inserir (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apifilaproximo-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/fila/proximo (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apifilaatualizar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/fila/atualizar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apifilaconsultar-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/fila/consultar (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apicredencialobter-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/credencial/obter (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apicredencialatualizar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/credencial/atualizar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apitarefaparametro-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/tarefa/parametro (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apitarefaexecutar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/tarefa/executar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apitelaabrir-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/tela/abrir (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apicertificadoobter-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/certificado/obter (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apinotificacaonotificar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/notificacao/notificar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_atividade-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_atividade (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_auditoria-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_auditoria (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_maquina-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_maquina (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_sistema-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_sistema (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_execucao-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_execucao (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apiinternofinaliza_execucao-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/interno/finaliza_execucao (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apiinternocria_execucao-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/interno/cria_execucao (POST)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Autenticação
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exemplos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#apiexecucaoiniciar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/execucao/iniciar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apiexecucaolog-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/execucao/log (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apiexecucaofinalizar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/execucao/finalizar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apifilainserir-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/fila/inserir (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apifilaproximo-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/fila/proximo (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apifilaatualizar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/fila/atualizar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apifilaconsultar-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/fila/consultar (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apicredencialobter-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/credencial/obter (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apicredencialatualizar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/credencial/atualizar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apitarefaparametro-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/tarefa/parametro (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apitarefaexecutar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/tarefa/executar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apitelaabrir-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/tela/abrir (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apicertificadoobter-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/certificado/obter (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apinotificacaonotificar-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/notificacao/notificar (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_atividade-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_atividade (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_auditoria-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_auditoria (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_maquina-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_maquina (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_sistema-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_sistema (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apirelatoriorelatorio_execucao-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/relatorio/relatorio_execucao (GET)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apiinternofinaliza_execucao-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/interno/finaliza_execucao (POST)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apiinternocria_execucao-post" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔹 /api/interno/cria_execucao (POST)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="endpoints-da-api-srs">📍 Endpoints da API SRS</h1>
+<h2 id="apiexecucaoiniciar-post">🔹 <code>/api/execucao/iniciar</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Inicia um novo processo de execução.</li>
+<li><strong>Parâmetros (JSON):</strong><ul>
+<li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
+<li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
+<li><code>Usuario</code> (objeto JSON, obrigatório) - Informações do usuário que inicia a execução:<ul>
+<li><code>UsuarioId</code> (string, obrigatório)</li>
+<li><code>NomeUsuario</code> (string, obrigatório)</li>
+<li><code>EmailUsuario</code> (string, opcional)</li>
+<li><code>PerfilId</code> (string, obrigatório)</li>
+</ul>
+</li>
+<li><code>ExecucaoId</code> (string, opcional) - Identificador da execução (caso já exista).</li>
+<li><code>Workflow</code> (string, obrigatório) - Nome do workflow associado à execução.</li>
+<li><code>Tarefa</code> (string, obrigatório) - Nome da tarefa a ser executada.</li>
+<li><code>NomeMaquina</code> (string, obrigatório) - Nome da máquina onde a execução será iniciada.</li>
+<li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função executada.</li>
+<li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada.</li>
+</ul>
+</li>
+<li>
+<p><strong>Exemplo de Requisição:</strong></p>
+<p><code>json
+{
+"Token": "abc123xyz",
+"EmpresaId": "empresa_001",
+"Usuario": {
+    "UsuarioId": "usr_123",
+    "NomeUsuario": "João Silva",
+    "EmailUsuario": "joao.silva@email.com",
+    "PerfilId": "admin"
+},
+"Workflow": "processo_geral",
+"Tarefa": "tarefa_001",
+"NomeMaquina": "Servidor_01",
+"Funcao": "IniciarProcesso",
+"LinhaComando": 10
+}</code></p>
+</li>
+<li>
+<p><strong>Resposta de Sucesso:</strong></p>
+<p><code>json
+{
+  "status": "sucesso",
+  "execucao_id": "12345",
+  "Parametros": { 
+    "param1": "valor1", 
+    "param2": "valor2" }
+}</code></p>
+</li>
+<li>
+<p><strong>Possíveis Erros:</strong></p>
+<ul>
+<li><code>400</code>: Requisição inválida.</li>
+<li><code>403</code>: Token inválido.</li>
+<li><code>401</code>: Máquina não autorizada.</li>
+<li><code>404</code>: Workflow ou tarefa não encontrados.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="apiexecucaolog-post">🔹 <code>/api/execucao/log</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Registra logs da execução.</li>
+<li><strong>Parâmetros (JSON):</strong><ul>
+<li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
+<li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
+<li><code>ExecucaoId</code> (string, obrigatório) - Identificador da execução.</li>
+<li><code>Descricao</code> (string, obrigatório) - Mensagem do log.</li>
+<li><code>Status</code> (string, opcional, padrão: <code>'Log'</code>) - Tipo do log (<code>Log</code>, <code>Alerta</code>, etc.).</li>
+<li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função associada ao log.</li>
+<li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada ao log.</li>
+<li><code>Arquivo</code> (arquivo binário, opcional) - Arquivo a ser anexado ao log.</li>
+</ul>
+</li>
+<li>
+<p><strong>Exemplo de Requisição:</strong></p>
+<p><code>json
+{
+"Token": "abc123xyz",
+"EmpresaId": "empresa_001",
+"ExecucaoId": "exec_56789",
+"Descricao": "Processo iniciado com sucesso.",
+"Status": "Log",
+"Funcao": "RegistrarEvento",
+"LinhaComando": 20
+}</code></p>
+</li>
+<li>
+<p><strong>Resposta de Sucesso:</strong></p>
+<p><code>json
+{
+  "status": "sucesso"
+}</code></p>
+</li>
+<li>
+<p><strong>Possíveis Erros:</strong></p>
+<ul>
+<li><code>400</code>: Requisição inválida.</li>
+<li><code>403</code>: Token inválido.</li>
+<li><code>404</code>: Execução não encontrada.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="apiexecucaofinalizar-post">🔹 <code>/api/execucao/finalizar</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Finaliza uma execução em andamento.</li>
+<li><strong>Parâmetros (JSON):</strong><ul>
+<li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
+<li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
+<li><code>ExecucaoId</code> (string, obrigatório) - Identificador da execução.</li>
+<li><code>Status</code> (string, obrigatório) - Status final da execução (<code>Ok</code> ou <code>Erro</code>).</li>
+<li><code>Descricao</code> (string, opcional, padrão: <code>'Execucao finalizada'</code>) - Mensagem descritiva do encerramento.</li>
+<li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função associada ao encerramento.</li>
+<li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada ao encerramento.</li>
+</ul>
+</li>
+<li>
+<p><strong>Exemplo de Requisição:</strong></p>
+<p><code>json
+{
+"Token": "abc123xyz",
+"EmpresaId": "empresa_001",
+"ExecucaoId": "exec_56789",
+"Status": "Ok",
+"Descricao": "Processo finalizado com êxito.",
+"Funcao": "FinalizarProcesso",
+"LinhaComando": 30
+}</code>  </p>
+</li>
+<li>
+<p><strong>Resposta de Sucesso:</strong></p>
+<p><code>json
+{
+  "status": "finalizado"
+}</code></p>
+</li>
+<li>
+<p><strong>Possíveis Erros:</strong></p>
+<ul>
+<li><code>400</code>: Requisição inválida.</li>
+<li><code>403</code>: Token inválido.</li>
+<li><code>404</code>: Execução não encontrada.</li>
+<li><code>409</code>: Execução já finalizada.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="apifilainserir-post">🔹 <code>/api/fila/inserir</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Insere uma nova tarefa na fila.</li>
+<li>
+<p><strong>Parâmetros (JSON):</strong></p>
+<ul>
+<li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
+<li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
+<li><code>Usuario</code> (objeto JSON, obrigatório) - Informações do usuário:<ul>
+<li><code>UsuarioId</code> (string, obrigatório)</li>
+<li><code>NomeUsuario</code> (string, obrigatório)</li>
+<li><code>EmailUsuario</code> (string, opcional)</li>
+<li><code>PerfilId</code> (string, obrigatório)</li>
+</ul>
+</li>
+<li><code>ExecucaoId</code> (string, opcional) - Identificador da execução associada à fila.</li>
+<li><code>Workflow</code> (string, obrigatório) - Nome do workflow associado à fila.</li>
+<li><code>Tarefa</code> (string, obrigatório) - Nome da tarefa da fila.</li>
+<li><code>Referencia</code> (string, obrigatório) - Referência da tarefa.</li>
+<li><code>ParametrosEntrada</code> (objeto JSON, obrigatório) - Parâmetros da tarefa.</li>
+<li><code>Status</code> (string, opcional, padrão: <code>'NaFila'</code>) - Status inicial da tarefa na fila (<code>NaFila</code>, <code>EmExecucao</code>).</li>
+<li><code>Mensagem</code> (string, opcional, padrão: <code>''</code>) - Mensagem associada à inserção da fila.</li>
+<li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função associada à inserção.</li>
+<li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada à inserção.</li>
+<li><code>Lote</code> (lista de objetos JSON, opcional) - Lista de tarefas para inserção em lote:<ul>
+<li><code>json
+        [
+            {
+                "Referencia": "valor",
+                "ParametrosEntrada": {
+                "param1": "valor1",
+                "param2": "valor2"
+                }
+            }
+        ]</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Resposta de Sucesso:</strong></p>
+<p><code>json
+{
+    "status": "sucesso",
+    "FilaId": "12345"
+}</code></p>
+</li>
+<li>
+<p><strong>Possíveis Erros:</strong></p>
+<ul>
+<li><code>400</code>: Requisição inválida.</li>
+<li><code>403</code>: Token inválido.</li>
+<li><code>404</code>: Workflow ou tarefa não encontrados.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="apifilaproximo-get">🔹 <code>/api/fila/proximo</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Retorna a próxima tarefa da fila.</li>
+<li><strong>Parâmetros (JSON):</strong><ul>
+<li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
+<li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
+<li><code>ExecucaoId</code> (string, obrigatório) - Identificador da execução que está requisitando a tarefa.</li>
+<li><code>Lote</code> (int, opcional, padrão: <code>1</code>) - Quantidade de tarefas a serem retornadas.</li>
+<li><code>FilaId</code> (string, opcional) - Identificador específico da fila a ser recuperada.</li>
+<li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função associada à requisição.</li>
+<li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada à requisição.</li>
+</ul>
+</li>
+<li>
+<p><strong>Resposta de Sucesso:</strong></p>
+<p><code>json
+{
+    "status": "sucesso",
+    "Fila": [
+    {
+        "FilaId": "12345",
+        "Referencia": "valor",
+        "ParametrosEntrada": {
+        "param1": "valor1"
+        }
+    }
+    ]
+}</code></p>
+</li>
+<li>
+<p><strong>Possíveis Erros:</strong></p>
+<ul>
+<li><code>400</code>: Requisição inválida.</li>
+<li><code>403</code>: Token inválido.</li>
+<li><code>404</code>: Nenhuma tarefa disponível.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="apifilaatualizar-post">🔹 <code>/api/fila/atualizar</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Atualiza o status de uma tarefa na fila.</li>
+<li><strong>Parâmetros (JSON):</strong><ul>
+<li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
+<li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
+<li><code>ExecucaoId</code> (string, obrigatório) - Identificador da execução associada à fila.</li>
+<li><code>FilaId</code> (string, obrigatório se não for um lote) - Identificador da fila.</li>
+<li><code>Status</code> (string, obrigatório) - Novo status da fila (<code>FilaOk</code>, <code>FilaErro</code>, <code>NaFila</code>, <code>EmExecucao</code>).</li>
+<li><code>ParametrosSaida</code> (objeto JSON, opcional) - Parâmetros resultantes da execução.</li>
+<li><code>Mensagem</code> (string, opcional) - Mensagem associada à atualização.</li>
+<li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função associada à atualização.</li>
+<li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada à atualização.</li>
+<li><code>Lote</code> (lista de objetos JSON, opcional) - Lista de atualizações para múltiplas filas:<ul>
+<li><code>json
+    [
+    {
+        "FilaId": "12345",
+        "Status": "FilaOk",
+        "ParametrosSaida": {
+        "resultado": "sucesso"
+        },
+        "Mensagem": "Tarefa concluída."
+    }
+    ]</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Resposta de Sucesso:</strong></p>
+<p><code>json
+{
+    "status": "sucesso",
+    "Mensagem": "Atualização realizada com sucesso"
+}</code></p>
+</li>
+<li>
+<p><strong>Possíveis Erros:</strong></p>
+<ul>
+<li><code>400</code>: Requisição inválida.</li>
+<li><code>403</code>: Token inválido.</li>
+<li><code>404</code>: Tarefa não encontrada.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="apifilaconsultar-get">🔹 <code>/api/fila/consultar</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Consulta o estado atual da fila.</li>
+<li><strong>Parâmetros (JSON):</strong></li>
+<li><code>Token</code> (string, obrigatório) - Token de autenticação.</li>
+<li><code>EmpresaId</code> (string, obrigatório) - Identificador da empresa.</li>
+<li><code>ExecucaoId</code> (string, obrigatório) - Identificador da execução associada à fila.</li>
+<li><code>Workflow</code> (string, obrigatório) - Nome do workflow da tarefa.</li>
+<li><code>Tarefa</code> (string, obrigatório) - Nome da tarefa.</li>
+<li><code>Criterios</code> (objeto JSON, obrigatório) - Critérios de busca no formato MongoDB:
+    <code>json
+    [
+      {
+        "StatusId": { "$eq": 1 }
+      }
+    ]</code></li>
+<li><code>OrderBy</code> (string, opcional) - Campo para ordenação.</li>
+<li><code>Limite</code> (int, opcional, padrão: <code>100</code>) - Número máximo de resultados (máximo permitido: 100).</li>
+<li><code>Funcao</code> (string, opcional, padrão: <code>''</code>) - Função associada à consulta.</li>
+<li><code>LinhaComando</code> (int, opcional, padrão: <code>0</code>) - Linha de comando associada à consulta.</li>
+<li><strong>Resposta de Sucesso:</strong>
+  <code>json
+  {
+    "status": "sucesso",
+    "Fila": [
+      {
+        "FilaId": "12345",
+        "Status": "EmExecucao",
+        "Referencia": "valor"
+      }
+    ]
+  }</code></li>
+<li><strong>Possíveis Erros:</strong></li>
+<li><code>400</code>: Requisição inválida.</li>
+<li><code>403</code>: Token inválido.</li>
+<li><code>404</code>: Nenhuma tarefa encontrada.</li>
+</ul>
+<h2 id="apicredencialobter-get">🔹 <code>/api/credencial/obter</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Obtém credenciais de um usuário.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apicredencialatualizar-post">🔹 <code>/api/credencial/atualizar</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Atualiza credenciais de um usuário.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+<li><code>Usuario</code> (string, obrigatório)</li>
+<li><code>NovaSenha</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apitarefaparametro-get">🔹 <code>/api/tarefa/parametro</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Obtém parâmetros de uma tarefa.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+<li><code>TarefaID</code> (int, obrigatório)</li>
+</ul>
+<h2 id="apitarefaexecutar-post">🔹 <code>/api/tarefa/executar</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Executa uma tarefa específica.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+<li><code>TarefaID</code> (int, obrigatório)</li>
+</ul>
+<h2 id="apitelaabrir-post">🔹 <code>/api/tela/abrir</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Abre uma interface específica.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+<li><code>Tela</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apicertificadoobter-get">🔹 <code>/api/certificado/obter</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Obtém informações de um certificado.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apinotificacaonotificar-post">🔹 <code>/api/notificacao/notificar</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Envia uma notificação para um usuário.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+<li><code>Mensagem</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apirelatoriorelatorio_atividade-get">🔹 <code>/api/relatorio/relatorio_atividade</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Gera um relatório de atividades.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apirelatoriorelatorio_auditoria-get">🔹 <code>/api/relatorio/relatorio_auditoria</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Gera um relatório de auditoria.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apirelatoriorelatorio_maquina-get">🔹 <code>/api/relatorio/relatorio_maquina</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Gera um relatório de máquinas.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apirelatoriorelatorio_sistema-get">🔹 <code>/api/relatorio/relatorio_sistema</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Gera um relatório do sistema.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apirelatoriorelatorio_execucao-get">🔹 <code>/api/relatorio/relatorio_execucao</code> (GET)</h2>
+<ul>
+<li><strong>Descrição:</strong> Gera um relatório de execuções.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apiinternofinaliza_execucao-post">🔹 <code>/api/interno/finaliza_execucao</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Finaliza uma execução interna.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+</ul>
+<h2 id="apiinternocria_execucao-post">🔹 <code>/api/interno/cria_execucao</code> (POST)</h2>
+<ul>
+<li><strong>Descrição:</strong> Cria uma nova execução interna.</li>
+<li><strong>Parâmetros:</strong></li>
+<li><code>Token</code> (string, obrigatório)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      
+    
+  </body>
+</html>
