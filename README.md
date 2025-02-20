@@ -49,5 +49,5 @@ Isso executará o script de exemplo, demonstrando a interação com a API SRSClo
 ## 📝 Documentação
 
 Para mais informações, acesse o repositório oficial:  
-🔗 [https://github.com/Automate-Brasil/SRS_cloud](https://github.com/Automate-Brasil/SRS_cloud)
+🔗 [https://github.com/Automate-Brasil/srscloud-integration](https://github.com/Automate-Brasil/srscloud-integration)
 ```

@@ -3,6 +3,8 @@ from urllib3.util import parse_url, Url
 from urllib.parse import quote
 from datetime import datetime
 
+__version__ = "0.2.1"
+
 """# Versão 2025.02.03"""
 
 """# Status válidos para execução

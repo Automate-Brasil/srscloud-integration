@@ -1,0 +1,9 @@
+site_name: API SRS
+theme:
+  name: material
+nav:
+  - Início: index.md
+  - Endpoints: endpoints.md
+  - Autenticação: auth.md
+  - Exemplos: examples.md
+  
