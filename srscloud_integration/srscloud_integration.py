@@ -3,7 +3,7 @@ from urllib3.util import parse_url, Url
 from urllib.parse import quote
 from datetime import datetime
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 """# Versão 2025.02.03"""
 
@@ -494,11 +494,11 @@ class SRS:
         """
         entrada = {'Token': self.token,
             'ExecucaoId': self.execucaoId,
-            'FilaId': self.filaId,
             'Lote': qtd,
             'Funcao':inspect.stack()[0][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
+        if self.filaId: entrada['FilaId'] = self.filaId
 
         self.logMaquina('debug', f'FilaProximo, parametros:{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}fila/proximo", data=entrada, proxies=self.urlProxy, verify=False)
@@ -510,7 +510,8 @@ class SRS:
             if retorno["Autorizado"]:
                 for item in retorno['Fila']: 
                     self.filaId = item['FilaId']
-                    item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
+                    if type(item['ParametrosEntrada']) == str:
+                        item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
                     self.logMaquina('info', f'Item de fila recebido: {self.filaId}')
             else: self.logMaquina('info', f'Sem registros na fila: {retorno}')
         except Exception as e: 
@@ -548,7 +549,17 @@ class SRS:
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Item de fila {filaId} atualizado com sucesso')
+        if retorno["Autorizado"]: 
+            self.logMaquina('info', f'Item de fila {filaId} atualizado com sucesso')
+            if proximo >0:
+                if retorno['Proximo']['Autorizado']:
+                    for item in retorno['Proximo']['Fila']: 
+                        self.filaId = item['FilaId']
+                        if type(item['ParametrosEntrada']) == str:
+                            item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
+                        self.logMaquina('info', f'Item de fila recebido: {self.filaId}')
+                else: self.logMaquina('info', f'Sem registros na fila: {retorno}')
+
         else: self.logMaquina('alert', f'Falha ao atualizar item de fila: {retorno}')
         return retorno
 
@@ -773,5 +784,3 @@ class SRS:
         if 'filename' not in arquivo: arquivo = json.dumps(self.formatar_arquivo(arquivo))
         parametrosEntrada = {'Arquivo': arquivo}
         return self.botstoreRequisicaoGenerica('ib_nf', parametrosEntrada)
-    
-
