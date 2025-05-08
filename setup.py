@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="srscloud-integration",
-    version="0.2.1",
+    version="0.3.0",
     author="Automate Brasil",
     author_email="cx@automate.com",
     description="Integração com SRSCloud para automação de processos",

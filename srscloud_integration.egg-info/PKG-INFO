@@ -1,8 +1,8 @@
 Metadata-Version: 2.2
 Name: srscloud-integration
-Version: 0.2.0
+Version: 0.3.0
 Summary: Integração com SRSCloud para automação de processos
-Home-page: https://github.com/Automate-Brasil/SRS_cloud
+Home-page: https://github.com/Automate-Brasil/srscloud-integration
 Author: Automate Brasil
 Author-email: cx@automate.com
 Classifier: Programming Language :: Python :: 3
@@ -74,5 +74,5 @@ Isso executará o script de exemplo, demonstrando a interação com a API SRSClo
 ## 📝 Documentação
 
 Para mais informações, acesse o repositório oficial:  
-🔗 [https://github.com/Automate-Brasil/SRS_cloud](https://github.com/Automate-Brasil/SRS_cloud)
+🔗 [https://github.com/Automate-Brasil/srscloud-integration](https://github.com/Automate-Brasil/srscloud-integration)
 ```
