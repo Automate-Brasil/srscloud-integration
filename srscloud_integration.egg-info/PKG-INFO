@@ -1,27 +1,20 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: srscloud-integration
-Version: 0.3.0
-Summary: Integração com SRSCloud para automação de processos
-Home-page: https://github.com/Automate-Brasil/srscloud-integration
-Author: Automate Brasil
-Author-email: cx@automate.com
+Version: 0.4.0
+Summary: Integração com SRS-Cloud para automação de processos.
+Author-email: Automate Brasil <cx@automate.com>
+License-Expression: CC-BY-NC-4.0
+Project-URL: Homepage, https://github.com/Automate-Brasil/srscloud-integration
+Project-URL: Bug Tracker, https://github.com/Automate-Brasil/srscloud-integration/issues
 Classifier: Programming Language :: Python :: 3
-Classifier: License :: Other/Proprietary License
 Classifier: Operating System :: OS Independent
-Requires-Python: >=3.7
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
 Description-Content-Type: text/markdown
-License-File: LICENSE
+License-File: LICENSE.md
 Requires-Dist: requests
 Requires-Dist: urllib3
-Dynamic: author
-Dynamic: author-email
-Dynamic: classifier
-Dynamic: description
-Dynamic: description-content-type
-Dynamic: home-page
-Dynamic: requires-dist
-Dynamic: requires-python
-Dynamic: summary
+Dynamic: license-file
 
 # SRSCloud Integration
 
