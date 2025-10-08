@@ -3,9 +3,9 @@ from urllib3.util import parse_url, Url
 from urllib.parse import quote
 from datetime import datetime
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
-"""# Versão 2025.02.03"""
+"""# Versão 2025.09.19"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -29,7 +29,7 @@ StatusFila	3	    FilaErro	Finalizado com erro
 
 class SRS:
     # Funções de configuração
-    def __init__(self, token:str, maquina:str, workflow:str, tarefa:str, url:str = 'https://c02.api.srscloud.com.br/api/', logFile=False, execucaoId=False, filaId=False) -> None:
+    def __init__(self, token:str, maquina:str, workflow:str, tarefa:str, url:str = 'https://api.srscloud.com.br/', logFile=False, execucaoId=False, filaId=False) -> None:
         self.url = url
         self.token = token
         self.workflow = workflow
@@ -41,7 +41,12 @@ class SRS:
         self.filaId = filaId
         hoje = datetime.now().strftime("%Y-%m-%d")
         self.localLog = f'c:/Automate Brasil/log/{workflow}/{tarefa}/log_{hoje}.txt'
-        self.urlBotStore = 'https://servico.srscloud.com.br/service/'
+
+        #busca no arquivo temporário a ExecucaoId e FilaId
+        ## validar se estamos mesmo criando o arquivo temporario
+        ## identificar onde o arquivo temporario é criado no windows e no linux 
+        #r"C:\Automate Brasil\Agent\temp\argumentos.txt"
+        #ler o arquivo e depois excluir
 
         try:
             arg1 = sys.argv[1] #recebe a ExecucaoId 
@@ -52,6 +57,7 @@ class SRS:
             arg2 = sys.argv[2] #recebe a FilaId
             if len(arg2) == 24: self.filaId = arg2
         except: self.filaId = filaId
+
 
     def proxy(self, server:str, user:str, password:str) -> None:
         """DICA: coloque sua senha criptografada como variavel de ambiente"""
@@ -138,10 +144,10 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
-        self.logMaquina('alert', f'----EXECUCAO INICICADA----')
+        self.logMaquina('alert', f'----EXECUCAO INICIADA----')
         self.logMaquina('debug', f'Parametros envidados:{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}execucao/iniciar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}execucao/iniciar", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/iniciar", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/execucao/iniciar", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -180,8 +186,8 @@ class SRS:
             entrada['Arquivo'] = json.dumps(self.formatar_arquivo(arquivo))
 
         self.logMaquina('debug', f'Registrando log :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}execucao/log", data=entrada, proxies=self.urlProxy, verify=False, files=arquivo)
-        else: response = requests.request("POST", f"{self.url}execucao/log", data=entrada, files=arquivo)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/log", data=entrada, proxies=self.urlProxy, verify=False, files=arquivo)
+        else: response = requests.request("POST", f"{self.url}api/execucao/log", data=entrada, files=arquivo)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -208,8 +214,8 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         self.logMaquina('debug', f'Alterando paramertos da tarefa- Parametros envidados:{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}tarefa/parametro", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}tarefa/parametro", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/tarefa/parametro", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/tarefa/parametro", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -233,8 +239,8 @@ class SRS:
         elif status != 'Ok': entrada['Status'] = status
 
         self.logMaquina('debug', f'Finalizando execução :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}execucao/finalizar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}execucao/finalizar", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/finalizar", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/execucao/finalizar", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -258,8 +264,8 @@ class SRS:
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
 
         self.logMaquina('debug', f'Tarefa Executar, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}tarefa/executar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}tarefa/executar", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/tarefa/executar", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/tarefa/executar", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -274,8 +280,8 @@ class SRS:
     def enviarNotificacao(self, canal:list, destino:list, assunto:str, mensagem:str, confidencial:int=0): 
         """Canais válidos: **Whatsapp, Teams, Email, Portal (** Betatest)
         múltiplos canais = ['Email', 'Portal']
-        Use usuarioId ou usuarioToken como destinatário
-        multiplos destinos = [{'Token': 'yyy'}, {'UsuarioId':'xxx'}]
+        Use usuarioId, usuarioToken ou perfil como destinatário
+        multiplos destinos = [{'Token': 'yyy'}, {'UsuarioId':'xxx'}, {'Perfil':'Admin'}, {'Perfil':'Todos'}]
         confidencial = 1 para dados sensiveis, não registra log do donteudo da mensagem
         """
         if type(destino) != str: destino = json.dumps(destino)
@@ -291,8 +297,8 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if confidencial ==0: self.logMaquina('debug', f'Enviar notificação, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}notificacao/notificar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}notificacao/notificar", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/notificacao/notificar", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/notificacao/notificar", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -353,8 +359,8 @@ class SRS:
         }
 
         self.logMaquina('debug', f'Credencial obter, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}credencial/obter", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}credencial/obter", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/credencial/obter", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/credencial/obter", data=entrada)
 
         #self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -393,8 +399,8 @@ class SRS:
         }
 
         self.logMaquina('debug', f'Credencial obter, parametros :{log}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}credencial/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}credencial/atualizar", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/credencial/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/credencial/atualizar", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -426,8 +432,8 @@ class SRS:
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
 
         self.logMaquina('debug', f'Fila inserir, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}fila/inserir", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}fila/inserir", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -461,8 +467,8 @@ class SRS:
         }
 
         self.logMaquina('debug', f'Fila inserir LOTE, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}fila/inserir", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}fila/inserir", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -501,8 +507,8 @@ class SRS:
         if self.filaId: entrada['FilaId'] = self.filaId
 
         self.logMaquina('debug', f'FilaProximo, parametros:{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}fila/proximo", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}fila/proximo", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/proximo", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/fila/proximo", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: 
@@ -540,8 +546,8 @@ class SRS:
         elif status != 'Ok': entrada['Status'] = status
 
         self.logMaquina('debug', f'Fila atualizar, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}fila/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}fila/atualizar", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -583,8 +589,8 @@ class SRS:
         }
 
         self.logMaquina('debug', f'Fila atualizar em lote, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}fila/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}fila/atualizar", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -645,8 +651,8 @@ class SRS:
         }
 
         self.logMaquina('debug', f'Fila consultar, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}fila/consultar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}fila/consultar", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/consultar", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/fila/consultar", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -677,8 +683,8 @@ class SRS:
         }
 
         self.logMaquina('debug', f'Requisição relatorio: {relatorio}, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}relatorio/{relatorio}", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}relatorio{relatorio}", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/relatorio/{relatorio}", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/relatorio{relatorio}", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -689,6 +695,25 @@ class SRS:
         if retorno["Autorizado"]: msg = f'Relatorio: {relatorio} gerado com sucesso'
         else: msg = f'Falha ao requisitar relatorio: {relatorio}: {retorno}'
         self.logMaquina('alert', msg)
+        return retorno
+
+    # Agentes de IA 
+    def agenteIA(self, agenteAlias:str, prompt:str) -> dict:
+        entrada = {'Token': self.token,
+            'ExecucaoId':self.execucaoId,
+            'Prompt': prompt,
+            'Funcao':inspect.stack()[0][3],
+            'LinhaComando':inspect.currentframe().f_back.f_lineno
+        }
+        self.logMaquina('debug', f'Chamando AgenteIA: {agenteAlias}, Prompt :{prompt}')
+        if self.usarProxy: response = requests.request("POST", f"{self.url}ia/{agenteAlias}", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}ia/{agenteAlias}", data=entrada)
+
+        self.logMaquina('debug', f'Retorno: {response.text}')
+        try: retorno = json.loads(response.text)
+        except Exception as e: 
+            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
+            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
         return retorno
 
     # principais serviços do BotStore
@@ -704,8 +729,8 @@ class SRS:
         }
         if assincrono: entrada['Retorno'] = 1
         self.logMaquina('debug', f'Requisição de serviço BOTSTORE: {servico}, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.urlBotStore}{servico}", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.urlBotStore}{servico}", data=entrada)
+        if self.usarProxy: response = requests.request("POST", f"{self.url}botstore/{servico}", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}botstore/{servico}", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
@@ -713,10 +738,6 @@ class SRS:
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
 
-        if retorno["Autorizado"]: msg = f'Requisição de serviço BotStore -{servico} realizada: BotStoreId: {retorno["BotStoreId"]}, Status: {retorno["Status"]}, Custo: {retorno["Custo"]}'
-        else: msg = f'Falha ao requisitar serviço BotStore - {servico}: {retorno}'
-        self.logMaquina('alert', msg)
-        self.log(3,msg)
         return retorno
     
     def bsQuebraCaptcha(self, imagemCaptcha) -> dict:

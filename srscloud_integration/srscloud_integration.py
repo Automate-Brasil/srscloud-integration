@@ -3,7 +3,7 @@ from urllib3.util import parse_url, Url
 from urllib.parse import quote
 from datetime import datetime
 
-__version__ = "2025.09.19"
+__version__ = "0.4.0"
 
 """# Versão 2025.09.19"""
 
