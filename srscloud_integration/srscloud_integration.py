@@ -3,9 +3,9 @@ from urllib3.util import parse_url, Url
 from urllib.parse import quote
 from datetime import datetime
 
-__version__ = "2025.09.19"
+__version__ = "4.1.2025.10.08"
 
-"""# Versão 2025.09.19"""
+"""# Versão 2025.10.08"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -111,7 +111,7 @@ class SRS:
         if not self.logFile: return False
         elif self.logFile == 'alert' and nivel in ['info', 'debug']: return False
         elif self.logFile == 'info' and nivel in ['debug']: return False
-        funcao = inspect.stack()[0][3]
+        funcao = inspect.stack()[1][3]
         linha = inspect.currentframe().f_back.f_lineno
         msg = f"\n{datetime.now()} - {funcao},{linha}: {mensagem}"
 
@@ -140,7 +140,7 @@ class SRS:
             'Workflow':self.workflow,
             'Tarefa':self.tarefa,
             'NomeMaquina':self.maquina,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
@@ -177,7 +177,7 @@ class SRS:
             'Descricao':mensagem,
             'ExecucaoId': self.execucaoId,
             'FileMode':'b64',
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
@@ -210,7 +210,7 @@ class SRS:
             'Parametro': parametro,
             'Valor': valor,
             'FileMode':'b64',
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         self.logMaquina('debug', f'Alterando paramertos da tarefa- Parametros envidados:{entrada}')
@@ -232,7 +232,7 @@ class SRS:
         entrada = {'Token': self.token,
             'ExecucaoId': self.execucaoId,
             'Descricao':mensagem,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if statusId !=4: entrada['StatusId'] = statusId
@@ -257,7 +257,7 @@ class SRS:
             'Workflow':workflow,
             'Tarefa': tarefa, 
             'NomeMaquina': maquina,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if filaId: entrada['FilaId'] = filaId
@@ -293,7 +293,7 @@ class SRS:
             'Assunto': assunto, 
             'Mensagem': mensagem, 
             'Confidencial': confidencial,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if confidencial ==0: self.logMaquina('debug', f'Enviar notificação, parametros :{entrada}')
@@ -354,7 +354,7 @@ class SRS:
         entrada = {'Token': self.token,
             'ExecucaoId':self.execucaoId,
             'Sistema':sistema,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
@@ -383,7 +383,7 @@ class SRS:
             'Parametro': parametro,
             'ValorAntigo': valorAntigo,
             'ValorNovo': valorNovo,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         log = {'Token': self.token,
@@ -394,7 +394,7 @@ class SRS:
             'Parametro': parametro,
             'ValorAntigo': 'valorAntigo',
             'ValorNovo': 'valorNovo',
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
@@ -425,7 +425,7 @@ class SRS:
             'Referencia': referencia,
             'ParametrosEntrada': parametrosEntrada,
             'FileMode':'b64',
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if inserirExecutando: entrada['Status'] = 'EmExecucao'
@@ -462,7 +462,7 @@ class SRS:
             'Lote': lote,
             'FileMode': 'b64',
             'ExecucaoId': self.execucaoId,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
@@ -501,7 +501,7 @@ class SRS:
         entrada = {'Token': self.token,
             'ExecucaoId': self.execucaoId,
             'Lote': qtd,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if self.filaId: entrada['FilaId'] = self.filaId
@@ -539,7 +539,7 @@ class SRS:
             'ParametrosSaida': parametrosSaida,
             'Proximo':proximo,
             'FileMode': 'b64',
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if statusId !=2: entrada['StatusId'] = statusId
@@ -584,7 +584,7 @@ class SRS:
             'ExecucaoId':self.execucaoId,
             'Lote':lote,
             'FileMode': 'b64',
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
@@ -646,7 +646,7 @@ class SRS:
             'Criterios': criterio,
             'OrderBy': ordenadoPor,
             'Limite':limite,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
@@ -678,7 +678,7 @@ class SRS:
         entrada = {'Token': self.token,
             'ExecucaoId':self.execucaoId,
             'ParametrosEntrada': parametrosEntrada,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
@@ -702,7 +702,7 @@ class SRS:
         entrada = {'Token': self.token,
             'ExecucaoId':self.execucaoId,
             'Prompt': prompt,
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         self.logMaquina('debug', f'Chamando AgenteIA: {agenteAlias}, Prompt :{prompt}')
@@ -724,11 +724,12 @@ class SRS:
             'ExecucaoId':self.execucaoId,
             'ParametrosEntrada': parametrosEntrada,
             'FileMode': 'b64',
-            'Funcao':inspect.stack()[0][3],
+            'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if assincrono: entrada['Retorno'] = 1
         self.logMaquina('debug', f'Requisição de serviço BOTSTORE: {servico}, parametros :{entrada}')
+        self.logMaquina('debug', f"URL: {self.url}botstore/{servico}")
         if self.usarProxy: response = requests.request("POST", f"{self.url}botstore/{servico}", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}botstore/{servico}", data=entrada)
 
@@ -794,7 +795,7 @@ class SRS:
     def bsCotacaoMoeda(self, moeda:str, moedaComparacao:str) -> dict:
         """pode ter mais de uma: 'USD,EUR,BRL' """
         parametrosEntrada = {'moedas': moeda, 'moedaComparacao':moedaComparacao}
-        return self.botstoreRequisicaoGenerica('cnpj_sintegra', parametrosEntrada)
+        return self.botstoreRequisicaoGenerica('comp_cotacao_moedas', parametrosEntrada)
     
     def bsBoleto(self, arquivo) -> dict:
         if 'filename' not in arquivo: arquivo = json.dumps(self.formatar_arquivo(arquivo))
