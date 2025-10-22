@@ -5,7 +5,7 @@ from datetime import datetime
 
 __version__ = "4.1"
 
-"""# Versão 2025.10.08"""
+"""# Versão 2025.10.22"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -684,7 +684,7 @@ class SRS:
 
         self.logMaquina('debug', f'Requisição relatorio: {relatorio}, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/relatorio/{relatorio}", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/relatorio{relatorio}", data=entrada)
+        else: response = requests.request("POST", f"{self.url}api/relatorio/{relatorio}", data=entrada)
 
         self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
