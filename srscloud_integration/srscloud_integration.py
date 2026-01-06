@@ -3,9 +3,9 @@ from urllib3.util import parse_url, Url
 from urllib.parse import quote
 from datetime import datetime
 
-__version__ = "0.4.1"
+__version__ = "2.4.1"
 
-"""# Versão 2025.10.22"""
+"""# Versão 2026.01.05"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
