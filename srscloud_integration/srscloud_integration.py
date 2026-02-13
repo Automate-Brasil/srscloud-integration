@@ -2,10 +2,11 @@ import json, requests, inspect, base64, os, sys, time
 from urllib3.util import parse_url, Url
 from urllib.parse import quote
 from datetime import datetime
+import logging
 
-__version__ = "2.4.1"
+__version__ = "2.5.1"
 
-"""# Versão 2026.01.05"""
+"""# Versão 2026.02.16"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -27,9 +28,30 @@ StatusFila	2	    FilaOk	    Finalizado com Sucesso
 StatusFila	3	    FilaErro	Finalizado com erro
 """
 
+
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        record.message = record.getMessage().replace("\n", " ").replace("\r", " ")
+        log_dict = {
+            "timestamp": datetime.fromtimestamp(record.created).strftime("%Y-%m-%d %H:%M:%S"),
+            "levelname": record.levelname,
+            "filename": record.filename,
+            "funcname": record.funcName,
+            "lineno": record.lineno,
+            "message": record.message,
+        }
+        return json.dumps(log_dict, ensure_ascii=False)
+    
+class TextFormatter(logging.Formatter):
+    def format(self, record):
+        record.message = record.getMessage().replace("\n", " ").replace("\r", " ")
+        log = f'{datetime.fromtimestamp(record.created).strftime("%Y-%m-%d %H:%M:%S")}\t{record.levelname}\t{record.filename}\t{record.funcName}\t{record.lineno}\t{record.message}'
+        return log
+
 class SRS:
     # Funções de configuração
-    def __init__(self, token:str, maquina:str, workflow:str, tarefa:str, url:str = 'https://api.srscloud.com.br/', logFile=False, execucaoId=False, filaId=False) -> None:
+    def __init__(self, token:str, maquina:str, workflow:str, tarefa:str, url:str = 'https://api.srscloud.com.br/', 
+                 logFile:str="DEBUG", logFormat="Text", execucaoId=False, filaId=False) -> None:
         self.url = url
         self.token = token
         self.workflow = workflow
@@ -42,25 +64,52 @@ class SRS:
         hoje = datetime.now().strftime("%Y-%m-%d")
         self.localLog = f'c:/Automate Brasil/log/{workflow}/{tarefa}/log_{hoje}.txt'
 
-        #busca no arquivo temporário a ExecucaoId e FilaId
-        ## validar se estamos mesmo criando o arquivo temporario
-        ## identificar onde o arquivo temporario é criado no windows e no linux 
-        #r"C:\Automate Brasil\Agent\temp\argumentos.txt"
-        #ler o arquivo e depois excluir
+        # Configuração do log 
+        handler = logging.StreamHandler()
+        if logFormat.upper() == "JSON": 
+            formatter = JsonFormatter()
+        else:
+            formatter = TextFormatter()
+        handler.setFormatter(formatter)
+        logging.getLogger().addHandler(handler)
+        if self.logFile:
+            if not os.path.isdir(os.path.dirname(self.localLog)): 
+                print('criando pasta:', os.path.dirname(self.localLog))
+                os.makedirs(os.path.dirname(self.localLog), exist_ok=True)
+
+        file_handler = logging.FileHandler(self.localLog, encoding='utf-8')
+        file_handler.setFormatter(formatter)
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+        logger = logging.getLogger()
+        logger.setLevel(getattr(logging, self.logFile.upper(), logging.DEBUG))
+        logging.getLogger("urllib3").setLevel(logging.WARNING)
+        logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 
         try:
             arg1 = sys.argv[1] #recebe a ExecucaoId 
             if len(arg1) == 24: self.execucaoId = arg1
+            logging.info(f'ExecucaoId recebido por argumento: {self.execucaoId}')
         except: self.execucaoId = execucaoId
 
         try: 
             arg2 = sys.argv[2] #recebe a FilaId
             if len(arg2) == 24: self.filaId = arg2
+            logging.info(f'FilaId recebido por argumento: {self.filaId}')
         except: self.filaId = filaId
 
+        if not self.execucaoId: 
+            try:
+                argumentos = r"C:\Automate Brasil\Agent\temp\argumentos.txt"
+                with open(argumentos, "r") as f: args = f.read()
+                execucaoId, filaId = args.split(';')
+                os.remove(argumentos)
+                logging.info(f'ExecucaoId {execucaoId} e FilaId {filaId} recebidos por arquivo')
+            except: argumentos = False
 
     def proxy(self, server:str, user:str, password:str) -> None:
         """DICA: coloque sua senha criptografada como variavel de ambiente"""
+        logging.info(f'Atribuindo configuração de proxy - servidor: {server}, usuario: {user}')
         self.usarProxy = True
         self.server = server 
         self.user = user 
@@ -69,59 +118,61 @@ class SRS:
         url_dict['auth'] = self.user + ':' + quote(self.password, '')
         urlProxy =  Url(**url_dict).url
         self.urlProxy = {'http': urlProxy, 'https': urlProxy}
-        self.logMaquina('alert','Configuração de proxy registrada')
+        logging.info('Configuração de proxy registrada')
     
     def setExecucaoId(self, execucaoId:str) -> None:
+        logging.info(f'Atribuindo ExecucaoId: {execucaoId}')
         self.execucaoId = execucaoId
         
     def setFilaId(self, filaId:str) -> None:
+        logging.info(f'Atribuindo FilaId: {filaId}')
         self.filaId = filaId
 
-    def setLogFile(self, localLog:str, logFile:str) -> None:
-        self.logFile = logFile
-        self.localLog = localLog
 
     # Funções de apoio
+    def setLogFile(self, localLog:str, logFile:str) -> None:
+        logging.info(f'Atribuindo configuração de log em arquivo - Local do arquivo: {localLog}, nivel de log: {logFile}')
+        self.logFile = logFile
+        self.localLog = localLog
+        if self.logFile:
+            logging.basicConfig(filemode='a', filename=self.localLog)
+        logging.getLogger().setLevel(getattr(logging, logFile.upper(), logging.DEBUG))
+
     def formatar_arquivo(self, arquivo:str) -> dict: #formata o arquivo para enviar
+        logging.info(f'Formatando arquivo para base64 para envio: {arquivo}')
         retorno = {}
         nomeArquivo = os.path.basename(arquivo).lower()
         with open(arquivo, "rb") as f: arquivo64 = base64.b64encode(f.read())
         
         arquivo64 = arquivo64.decode('ascii')
         retorno = {'filename':nomeArquivo, 'base64': arquivo64}
+        logging.debug(f'Arquivo formatado')
         return retorno
 
     def salvar_arquivo(self, link:str, destino:str) -> bool: #recebe o link do arquivo e salva com o nome e local desejado
         try:
+            logging.info(f'Salvando arquivo do link: {link} para o destino: {destino}')
             r = requests.get(link)
             with open(destino, 'wb') as f: f.write(r.content)
+            return True
         except Exception as e:
             erro = {'Msg': 'Erro ao salvar arquivo', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            self.logMaquina('alert', erro)
+            logging.error(f'Falha ao salvar arquivo: {erro}')
             return False
-        return True
 
-    def logMaquina(self, nivel:str, mensagem:str) -> bool:
-        """##### Niveis de log
+    def logMaquina(self, nivel:str, mensagem:str) -> None:
+        """### Função Obsoleta use a biblioteca logging diretamente para registrar logs em arquivo e console, esta função é mantida para compatibilidade com versões anteriores, mas os logs registrados por ela não seguem o formato estruturado.
+        ##### Niveis de log
         'debug' = registra todos os paraemtros de entrada e saida de cada interação
         'info' = registra todos os acessos sem os detalhes de entrada e saida 
         'alert' = registra inicio e fim de execução, alteração de parametros, credenciais e erros
         False = desabilita o registro de log em arquivo
         """
-        if not self.logFile: return False
-        elif self.logFile == 'alert' and nivel in ['info', 'debug']: return False
-        elif self.logFile == 'info' and nivel in ['debug']: return False
-        funcao = inspect.stack()[1][3]
-        linha = inspect.currentframe().f_back.f_lineno
-        msg = f"\n{datetime.now()} - {funcao},{linha}: {mensagem}"
-
-        if not os.path.isdir(os.path.dirname(self.localLog)): 
-            print('criando pastas:', os.path.dirname(self.localLog))
-            os.makedirs(os.path.dirname(self.localLog), exist_ok=True)
-
-        with open(self.localLog, 'a', encoding='utf-8') as f: f.write(msg)
-        print(funcao, linha,' - ', mensagem)
-        return True
+        match nivel.upper(): 
+            case 'DEBUG': logging.debug(mensagem)
+            case 'ERROR': logging.error(mensagem)
+            case 'ALERT': logging.warning(mensagem)
+            case _: logging.info(mensagem)
 
 
     # Funçoes de comunicação com as APIs do SRS
@@ -144,20 +195,21 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
-        self.logMaquina('alert', f'----EXECUCAO INICIADA----')
-        self.logMaquina('debug', f'Parametros envidados:{entrada}')
+        logging.warning(f'----EXECUCAO INICIADA----')
+        logging.debug(f'Parametros envidados:{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/iniciar", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/execucao/iniciar", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
+            logging.error(f'Falha ao iniciar execução: {erro}')
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
 
         if retorno["Autorizado"]: 
             self.execucaoId = retorno['ExecucaoId']
-            self.logMaquina('info', f'Execução:{self.execucaoId} iniciada com sucesso')
+            logging.info(f'Execução:{self.execucaoId} iniciada com sucesso')
             configuracao = {}
             if len(retorno['Parametros'])>0:
                 for par in retorno['Parametros']:
@@ -166,12 +218,14 @@ class SRS:
                     else:
                         configuracao[par['NomeParametro']] = par['ValorParametro']
             retorno['Configuracao'] = configuracao
+            logging.debug(f'Parametros de configuração recebidos: {configuracao}')
         else: 
-            self.logMaquina('alert', f'Falha ao iniciar execução: {retorno}')
+            logging.error(f'Falha ao iniciar execução: {retorno}')
             sys.exit()
         return retorno
 
     def log(self, statusId:int, mensagem:str, arquivo:str='') -> dict:
+        """Log de status da execução, use para registrar o andamento da execução, mensagens de alerta e erros diretamente no SRS Cloud"""
         entrada = {'Token': self.token,
             'StatusId':statusId, #(2=mensagem de andamento, 3=alerta)
             'Descricao':mensagem,
@@ -185,23 +239,23 @@ class SRS:
             if 'filename' not in arquivo: arquivo = self.formatar_arquivo(arquivo)
             entrada['Arquivo'] = json.dumps(self.formatar_arquivo(arquivo))
 
-        self.logMaquina('debug', f'Registrando log :{entrada}')
+        logging.debug(f'Registrando log :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/log", data=entrada, proxies=self.urlProxy, verify=False, files=arquivo)
         else: response = requests.request("POST", f"{self.url}api/execucao/log", data=entrada, files=arquivo)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
+            logging.error(f'Falha ao registrar log: {erro}')
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Registrando log:{mensagem} - registrada')
-        else: self.logMaquina('alert', f'Falha ao registrar log: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao registrar log: {retorno}')
         return retorno
 
     def parametroAtualizar(self, parametro:str, valor, workflow=False, tarefa=False) -> dict:
-        """#voce pode criar parametros com permissão de alteração pelo robo, 
-        #utilize esta função para alterar este parametro"""
+        """- voce pode criar parametros com permissão de alteração pelo robo
+        - utilize esta função para alterar estes parametros"""
         if not tarefa: tarefa = self.tarefa
         if not workflow: workflow = self.workflow
         entrada={'Token': self.token,
@@ -213,18 +267,18 @@ class SRS:
             'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
-        self.logMaquina('debug', f'Alterando paramertos da tarefa- Parametros envidados:{entrada}')
+        logging.info(f'Alterando paramertos da tarefa- Parametros envidados:{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/tarefa/parametro", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/tarefa/parametro", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f'Falha ao alterar parametro: {erro}')
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Ateração parametro tarefa ({workflow} - {tarefa}) Parametro:{parametro}, valor {valor} - realiado com sucesso.')
-        else: self.logMaquina('alert', f'Falha ao tentar alterar parametro: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao tentar alterar parametro: {retorno}')
         return retorno
 
     def execucaoFinalizar(self, status:str='Ok', statusId:int=4, mensagem:str='Execução finalizada') -> dict:
@@ -238,18 +292,18 @@ class SRS:
         if statusId !=4: entrada['StatusId'] = statusId
         elif status != 'Ok': entrada['Status'] = status
 
-        self.logMaquina('debug', f'Finalizando execução :{entrada}')
+        logging.info(f'Finalizando execução :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/finalizar", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/execucao/finalizar", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f'Falha ao finalizar execução: {erro}')
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Execução finalizada com sucesso:{mensagem}')
-        else: self.logMaquina('alert', f'Falha ao finalizar execução: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao finalizar execução: {retorno}')
         return retorno
 
     def executarTarefa(self, workflow:str, tarefa:str, maquina:str, filaId=False) -> dict: 
@@ -263,18 +317,18 @@ class SRS:
         if filaId: entrada['FilaId'] = filaId
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
 
-        self.logMaquina('debug', f'Tarefa Executar, parametros :{entrada}')
+        logging.info(f'Tarefa Executar, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/tarefa/executar", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/tarefa/executar", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao requisitar execução de tarefa: {erro}")
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Tarefa {workflow} - {tarefa} enviada para execução na maquina {maquina} com sucesso')
-        else: self.logMaquina('alert', f'Falha ao executar tarefa: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao executar tarefa: {retorno}')
         return retorno
     
     def enviarNotificacao(self, canal:list, destino:list, assunto:str, mensagem:str, confidencial:int=0): 
@@ -296,18 +350,18 @@ class SRS:
             'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
-        if confidencial ==0: self.logMaquina('debug', f'Enviar notificação, parametros :{entrada}')
+        if confidencial ==0: logging.info(f'Enviar notificação, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/notificacao/notificar", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/notificacao/notificar", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao enviar notificação: {erro}")
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Envio da mensagem {assunto} para {destino} realizada com sucesso')
-        else: self.logMaquina('alert', f'Falha ao enviar notificação: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao enviar notificação: {retorno}')
         return retorno
 
 
@@ -358,19 +412,16 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        self.logMaquina('debug', f'Credencial obter, parametros :{entrada}')
+        logging.info(f'Credencial obter, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/credencial/obter", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/credencial/obter", data=entrada)
 
-        #self.logMaquina('debug', f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Credencial {sistema} recebida com sucesso')
-        else: self.logMaquina('alert', f'Falha ao enviar notificação: {retorno}')
-        self.logMaquina('debug', f'Retorno: O retorno da credencial não foi salvo por motivos de segurança')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao obter credencial: {retorno}')
         return retorno
 
     def credencialAlterar(self, credencialId:str, expiraEm=False, parametro=False, valorAntigo=False, valorNovo=False, ativo:int=1) -> dict:
@@ -398,18 +449,18 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        self.logMaquina('debug', f'Credencial obter, parametros :{log}')
+        logging.info(f'Credencial obter, parametros :{log}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/credencial/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/credencial/atualizar", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao alterar credencial: {erro}")
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Alteração credencial realizada com sucesso')
-        else: self.logMaquina('alert', f'Falha ao alterar credencial: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao alterar credencial: {retorno}')
         return retorno
 
 
@@ -431,22 +482,23 @@ class SRS:
         if inserirExecutando: entrada['Status'] = 'EmExecucao'
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
 
-        self.logMaquina('debug', f'Fila inserir, parametros :{entrada}')
+        logging.info(f'Fila inserir, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao inserir fila: {erro}")
 
         if retorno["Autorizado"]: 
             if inserirExecutando: 
                 self.filaId = retorno['FilaId']
-                self.logMaquina('info', f'Item {referencia} inserido na fila da tarefa {tarefa} com sucesso: {retorno["FilaId"]} e agora está em execução')
-            else: self.logMaquina('info', f'Item {referencia} inserido na fila da tarefa {tarefa} com sucesso: {retorno["FilaId"]}')
-        else: self.logMaquina('alert', f'Falha ao inserir item de fila: {retorno}')
+                logging.info(f'Item {referencia} inserido na fila da tarefa {tarefa} com sucesso: {retorno["FilaId"]} e agora está em execução')
+            else: logging.info(f'Item {referencia} inserido na fila da tarefa {tarefa} com sucesso: {retorno["FilaId"]}')
+        else: logging.error(f'Falha ao inserir item de fila: {retorno}')
         return retorno
 
     def filaInserirLote(self, lote:list, workflow=False, tarefa=False) -> dict:
@@ -466,18 +518,18 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        self.logMaquina('debug', f'Fila inserir LOTE, parametros :{entrada}')
+        logging.info(f'Fila inserir LOTE, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao inserir fila lote: {erro}")
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Lote inserido na fila da tarefa {tarefa} com sucesso')
-        else: self.logMaquina('alert', f'Falha ao inserir lote na fila: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao inserir lote na fila: {retorno}')
         return retorno
 
     def filaProximo(self, qtd:int=1) -> dict:#retorna o proximo item da fila, voce pode alterar a quantidade para trazer mais de 1
@@ -506,11 +558,11 @@ class SRS:
         }
         if self.filaId: entrada['FilaId'] = self.filaId
 
-        self.logMaquina('debug', f'FilaProximo, parametros:{entrada}')
+        logging.info(f'FilaProximo, parametros:{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/proximo", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/fila/proximo", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: 
             retorno = json.loads(response.text)
             if retorno["Autorizado"]:
@@ -518,11 +570,12 @@ class SRS:
                     self.filaId = item['FilaId']
                     if type(item['ParametrosEntrada']) == str:
                         item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
-                    self.logMaquina('info', f'Item de fila recebido: {self.filaId}')
-            else: self.logMaquina('info', f'Sem registros na fila: {retorno}')
+                    logging.info(f'Item de fila recebido: {self.filaId}')
+            else: logging.info(f'Sem registros na fila: {retorno}')
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao buscar proximo da fila: {erro}")
             self.filaId = False
         
         return retorno
@@ -545,28 +598,29 @@ class SRS:
         if statusId !=2: entrada['StatusId'] = statusId
         elif status != 'Ok': entrada['Status'] = status
 
-        self.logMaquina('debug', f'Fila atualizar, parametros :{entrada}')
+        logging.info(f'Fila atualizar, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao atualizar imte de fila: {erro}")
 
         if retorno["Autorizado"]: 
-            self.logMaquina('info', f'Item de fila {filaId} atualizado com sucesso')
+            logging.debug(f'Item de fila {filaId} atualizado com sucesso')
             if proximo >0:
                 if retorno['Proximo']['Autorizado']:
                     for item in retorno['Proximo']['Fila']: 
                         self.filaId = item['FilaId']
                         if type(item['ParametrosEntrada']) == str:
                             item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
-                        self.logMaquina('info', f'Item de fila recebido: {self.filaId}')
-                else: self.logMaquina('info', f'Sem registros na fila: {retorno}')
+                        logging.info(f'Item de fila recebido: {self.filaId}')
+                else: logging.info(f'Sem registros na fila: {retorno}')
 
-        else: self.logMaquina('alert', f'Falha ao atualizar item de fila: {retorno}')
+        else: logging.error(f'Falha ao atualizar item de fila: {retorno}')
         return retorno
 
     def filaAtualizarLote(self, lote:int) -> dict:
@@ -588,18 +642,17 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        self.logMaquina('debug', f'Fila atualizar em lote, parametros :{entrada}')
+        logging.info(f'Fila atualizar em lote, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Lote de fila atualizado com sucesso')
-        else: self.logMaquina('alert', f'Falha ao atualizar lote de fila: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao atualizar lote de fila: {retorno}')
         return retorno
 
     def filaConsultar(self, criterio:list, ordenadoPor:str, limite:int=10, workflow=False, tarefa=False) -> dict:
@@ -650,18 +703,18 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        self.logMaquina('debug', f'Fila consultar, parametros :{entrada}')
+        logging.info(f'Fila consultar, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/consultar", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/fila/consultar", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao consultar fila: {erro}")
 
-        if retorno["Autorizado"]: self.logMaquina('info', f'Consulta de fila realizada com sucesso')
-        else: self.logMaquina('alert', f'Falha ao consultar fila: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao consultar fila: {retorno}')
         return retorno
 
     def relatorio(self, relatorio:str, dataInicio, dataFim, workflowAlias=False, tarefaAlias=False, statusId=False, pagina:int=0, limite:int=1000) -> dict:
@@ -682,19 +735,18 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        self.logMaquina('debug', f'Requisição relatorio: {relatorio}, parametros :{entrada}')
+        logging.info(f'Requisição relatorio: {relatorio}, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/relatorio/{relatorio}", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/relatorio/{relatorio}", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao requisitar relatorio: {erro}")
 
-        if retorno["Autorizado"]: msg = f'Relatorio: {relatorio} gerado com sucesso'
-        else: msg = f'Falha ao requisitar relatorio: {relatorio}: {retorno}'
-        self.logMaquina('alert', msg)
+        if not retorno["Autorizado"]: logging.error(f'Falha ao requisitar relatorio: {relatorio}: {retorno}')
         return retorno
 
     # Agentes de IA 
@@ -705,15 +757,17 @@ class SRS:
             'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
-        self.logMaquina('debug', f'Chamando AgenteIA: {agenteAlias}, Prompt :{prompt}')
+        logging.info(f'Chamando AgenteIA: {agenteAlias}, Prompt :{prompt}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}ia/{agenteAlias}", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}ia/{agenteAlias}", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao acionar agenteIA: {erro}")
+            
         return retorno
 
     # principais serviços do BotStore
@@ -728,16 +782,16 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if assincrono: entrada['Retorno'] = 1
-        self.logMaquina('debug', f'Requisição de serviço BOTSTORE: {servico}, parametros :{entrada}')
-        self.logMaquina('debug', f"URL: {self.url}botstore/{servico}")
+        logging.info(f'Requisição de serviço BOTSTORE: {servico}, parametros :{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}botstore/{servico}", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}botstore/{servico}", data=entrada)
 
-        self.logMaquina('debug', f'Retorno: {response.text}')
+        logging.debug(f'Retorno: {response.text}')
         try: retorno = json.loads(response.text)
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+            logging.error(f"Falha ao BotStore {servico}: {erro}")
 
         return retorno
     
@@ -747,31 +801,36 @@ class SRS:
         return self.botstoreRequisicaoGenerica('captcha', parametrosEntrada)
     
     def bsQuebraRecaptcha(self, googlekey:str, pageurl:str) -> dict:
-        self.logMaquina('debug', 'Iniciando Quebra de Recaptcha Assincrono...')
+        logging.info('Iniciando Quebra de Recaptcha Assincrono...')
         parametrosEntrada = {'googlekey': googlekey, 'pageurl': pageurl}
         retorno = self.botstoreRequisicaoGenerica('recaptcha', parametrosEntrada, assincrono=True)
         if retorno['Autorizado']:
             botStoreId = retorno['BotStoreId']
-            self.logMaquina('debug', f'Requisição registrada com sucesso: {botStoreId}')
-        else: return retorno
+            logging.debug(f'Requisição registrada com sucesso: {botStoreId}')
+        else: 
+            logging.error(f"Falha ao requisitar Recaptcha: {erro}")
+            return retorno
         
-        url=f"{self.urlBotStore}consulta_andamento"
+        url=f"{self.url}botstore/consulta_andamento"
+        
         payload = {'Token': self.token, 'ParametrosEntrada': json.dumps({'BotStoreId':botStoreId})}
         limite = 160 #2 minutos 
         for i in range(limite):
             try:  
-                response = requests.post(url, data=payload) #envio via POST 
+                response = requests.post(url, data=payload)
                 retorno = json.loads(response.text)
-                self.logMaquina('debug', f"{i} - Aguardando resposta do serviço: {botStoreId}, status: {retorno['Resultado']['StatusId']}")
-                if not retorno['Autorizado']: return retorno
+                logging.debug(f"{i} - Aguardando resposta do serviço: {botStoreId}, status: {retorno['Resultado']['StatusId']}")
+                if not retorno['Autorizado']: 
+                    logging.error(f"Falha ao consultar andamento da requisição: {erro}")
+                    return retorno
                 elif retorno['Resultado']['StatusId'] != 0: 
-                    self.logMaquina('debug', f"{i} - Retorno identificado")
+                    logging.debug(f"{i} - Retorno identificado: {retorno}")
                     return retorno['Resultado']['ParametrosSaida']
                 time.sleep(1)
             except Exception as e: 
                 erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
                 mensagem = f'Erro no acompanhamento da quebra do recaptcha:{erro} : retorno: {retorno}'
-                self.logMaquina('alert', mensagem)
+                logging.error(mensagem)
                 return {'Autorizado':False, 'Mensagem': mensagem}
     
     def bsConsultaCNPJ(self, cnpj:str) -> dict:
