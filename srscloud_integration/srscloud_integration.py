@@ -4,9 +4,8 @@ from urllib.parse import quote
 from datetime import datetime
 import logging
 
-__version__ = "2.5.1"
-
-"""# Versão 2026.02.16"""
+__version__ = "2.5.1.RC1"
+"""# Versão 2.5.1.RC1 de 2026.02.25"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -81,21 +80,23 @@ class SRS:
         file_handler.setFormatter(formatter)
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(formatter)
+
         logger = logging.getLogger()
         logger.setLevel(getattr(logging, self.logFile.upper(), logging.DEBUG))
+        logger.addHandler(file_handler)
+        logger.addHandler(stream_handler)
+
         logging.getLogger("urllib3").setLevel(logging.WARNING)
         logging.getLogger("urllib3.connectionpool").setLevel(logging.WARNING)
 
         try:
             arg1 = sys.argv[1] #recebe a ExecucaoId 
             if len(arg1) == 24: self.execucaoId = arg1
-            logging.info(f'ExecucaoId recebido por argumento: {self.execucaoId}')
         except: self.execucaoId = execucaoId
 
         try: 
             arg2 = sys.argv[2] #recebe a FilaId
             if len(arg2) == 24: self.filaId = arg2
-            logging.info(f'FilaId recebido por argumento: {self.filaId}')
         except: self.filaId = filaId
 
         if not self.execucaoId: 
@@ -104,8 +105,8 @@ class SRS:
                 with open(argumentos, "r") as f: args = f.read()
                 execucaoId, filaId = args.split(';')
                 os.remove(argumentos)
-                logging.info(f'ExecucaoId {execucaoId} e FilaId {filaId} recebidos por arquivo')
             except: argumentos = False
+        logging.warning(f'## Integração SRSCloud versão: {__version__}: Workflow: {workflow}, Tarefa: {tarefa}, Máquina: {maquina}, ExecucaoId: {self.execucaoId}, FilaId: {self.filaId}, LogFile: {logFile}, LogFormat: {logFormat}, LocalLog: {self.localLog}')
 
     def proxy(self, server:str, user:str, password:str) -> None:
         """DICA: coloque sua senha criptografada como variavel de ambiente"""
@@ -195,7 +196,7 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
-        logging.warning(f'----EXECUCAO INICIADA----')
+        logging.info(f'----EXECUCAO INICIADA----')
         logging.debug(f'Parametros envidados:{entrada}')
         if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/iniciar", data=entrada, proxies=self.urlProxy, verify=False)
         else: response = requests.request("POST", f"{self.url}api/execucao/iniciar", data=entrada)
@@ -865,3 +866,4 @@ class SRS:
         if 'filename' not in arquivo: arquivo = json.dumps(self.formatar_arquivo(arquivo))
         parametrosEntrada = {'Arquivo': arquivo}
         return self.botstoreRequisicaoGenerica('ib_nf', parametrosEntrada)
+    
