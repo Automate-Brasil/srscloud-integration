@@ -4,8 +4,8 @@ from urllib.parse import quote
 from datetime import datetime
 import logging
 
-__version__ = "2.5.1.RC1"
-"""# Versão 2.5.1.RC1 de 2026.02.25"""
+__version__ = "0.5.0rc1" 
+"""# Versão 0.5.0rc1 de 2026.02.26"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
