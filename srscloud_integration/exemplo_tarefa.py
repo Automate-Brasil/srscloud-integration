@@ -8,6 +8,12 @@ from datetime import datetime
 # defina os parametros de configuração do seu sistema:
 srs = SRS(token='',maquina='',workflow='',tarefa='')
 
+# Registro local de Logs: 
+#### A biblioteca do SRS já grava por padrão os logs em c:/Automate Brasil/log/{workflow}/{tarefa}/log{hoje}.txt em formato texto e com nível DEBUG
+### Voce pode alterar estas configurações com esta função: 
+srs.setLogFile(localLog='c:/suapasta/seuarquivo.txt', logFile='o nivel de log que deseja registrar, ex: DEBUG, INFO, ERROR') #defina o local do log e o nível de log que deseja registrar.
+#o log tambem pode ser armazenado em formato json, para isso set logFormat='json' na chamada do SRS
+
 # se precisar setar proxy: (se o SrsBot estiver instalado na maquina, a configuração é automatica)
 #### DICA: coloque a senha de proxy nas variaveis de ambiente criptografada e descriptografe aqui
 srs.proxy(server='', user='', password='')
