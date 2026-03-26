@@ -4,8 +4,8 @@ from urllib.parse import quote
 from datetime import datetime
 import logging
 
-__version__ = "1.0.1" 
-"""# Versão 1.0.1 de 2026.03.11"""
+__version__ = "1.0.2" 
+"""# Versão 1.0.2 de 2026.03.26"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -365,6 +365,28 @@ class SRS:
         if not retorno["Autorizado"]: logging.error(f'Falha ao enviar notificação: {retorno}')
         return retorno
 
+    def busca_link_download(self, arquivo) -> dict:
+        """Alguns parametros ou formas de consultar filas podem enviar apenas o nome de referencia do arquivo no SRS Cloud, neste caso, voce pode requisitar o link para baixar o arquivo"""
+        if type(arquivo) == dict: arquivo = json.dumps(arquivo)
+        entrada = {'Token': self.token,
+            'Arquivo':arquivo,
+            'ExecucaoId': self.execucaoId,
+            'Funcao':inspect.stack()[1][3],
+            'LinhaComando':inspect.currentframe().f_back.f_lineno
+        }
+        logging.debug(f'Requisitando link de download:{entrada}')
+        if self.usarProxy: response = requests.request("POST", f"{self.url}api/tarefa/gerar_link", data=entrada, proxies=self.urlProxy, verify=False)
+        else: response = requests.request("POST", f"{self.url}api/tarefa/gerar_link", data=entrada)
+
+        logging.debug(f'Retorno: {response.text}')
+        try: retorno = json.loads(response.text)
+        except Exception as e: 
+            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
+            logging.error(f'Falha ao requisitar link de download: {erro}')
+            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+
+        if not retorno["Autorizado"]: logging.error(f'Falha ao requisitar link de download: {retorno}')
+        return retorno
 
     # controle de credenciais
     def credencialObter(self, sistema:str) -> dict:
