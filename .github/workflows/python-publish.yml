@@ -3,6 +3,7 @@ name: Upload Python Package
 on:
   release:
     types: [published] # O processo inicia quando você cria um Release no GitHub
+  workflow_dispatch:
 
 permissions:
   contents: read
