@@ -4,8 +4,8 @@ from urllib.parse import quote
 from datetime import datetime
 import logging
 
-__version__ = "1.0.2" 
-"""# Versão 1.0.2 de 2026.03.26"""
+__version__ = "1.0.3" 
+"""# Versão 1.0.3 de 2026.06.30"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -64,13 +64,12 @@ class SRS:
         self.localLog = f'c:/Automate Brasil/log/{workflow}/{tarefa}/log_{hoje}.txt'
 
         # Configuração do log 
-        handler = logging.StreamHandler()
+        logger = logging.getLogger()
+        logger.propagate = False
         if logFormat.upper() == "JSON": 
             formatter = JsonFormatter()
         else:
             formatter = TextFormatter()
-        handler.setFormatter(formatter)
-        logging.getLogger().addHandler(handler)
         if self.logFile:
             if not os.path.isdir(os.path.dirname(self.localLog)): 
                 print('criando pasta:', os.path.dirname(self.localLog))
@@ -81,7 +80,7 @@ class SRS:
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(formatter)
 
-        logger = logging.getLogger()
+
         logger.setLevel(getattr(logging, self.logFile.upper(), logging.DEBUG))
         logger.addHandler(file_handler)
         logger.addHandler(stream_handler)

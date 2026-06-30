@@ -1,17 +1,22 @@
 ####### exemplo de integração com SRSCloud ##########
 # utilize a biblioteca SRSCloud_Integration
 #pip install srscloud-integration
-from srscloud_integration import SRS
-import sys
+import srscloud_integration as srsi
 from datetime import datetime
 
+token = ''
+maquina = ''
+workflow = ''
+tarefa = ''
+sistema = ''
+
 # defina os parametros de configuração do seu sistema:
-srs = SRS(token='',maquina='',workflow='',tarefa='')
+srs = srsi.SRS(token=token,maquina=maquina,workflow=workflow,tarefa=tarefa,logFile='debug')
 
 # Registro local de Logs: 
-#### A biblioteca do SRS já grava por padrão os logs em c:/Automate Brasil/log/{workflow}/{tarefa}/log{hoje}.txt em formato texto e com nível DEBUG
+#### A biblioteca do SRS já grava por padrão os logs em c:/Automate Brasil/log/{workflow}/{tarefa}/log{hoje}.txt em formato texto e com nível info
 ### Voce pode alterar estas configurações com esta função: 
-srs.setLogFile(localLog='c:/suapasta/seuarquivo.txt', logFile='o nivel de log que deseja registrar, ex: DEBUG, INFO, ERROR') #defina o local do log e o nível de log que deseja registrar.
+srs.setLogFile(localLog='c:/suapasta/seuarquivo.txt', logFile='o nivel de log que deseja registrar, ex: DEBUG, INFO, WARNING, ERROR') #defina o local do log e o nível de log que deseja registrar.
 #o log tambem pode ser armazenado em formato json, para isso set logFormat='json' na chamada do SRS
 
 # se precisar setar proxy: (se o SrsBot estiver instalado na maquina, a configuração é automatica)
@@ -27,8 +32,6 @@ try:
     log = srs.log(statusId=2, mensagem="escreva sua mensagem de log") #registro de logs (2) ou Alertas (3)
     #Se precisar, pode enviar um arquivo de evidencia ou print de tela adicionando 2 parametros: arquivo='path do arquivo' 
     #logs são uteis para acompanhar o andamento da execução, use-o em momentos chave da sua aplicação, mas lembre-se que seu usuário estará acessando estes registros, não insira senhas nem crie um log muito detalhado e técnico demais. Isso deixa a plicação mais lenta e muito mais dificil de entender. 
-    if not log['Autorizado']: #problemas com a execução!
-        sys.exit()
 
     #######Filas #######
 
