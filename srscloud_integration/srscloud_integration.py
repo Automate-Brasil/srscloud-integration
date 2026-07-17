@@ -4,8 +4,8 @@ from urllib.parse import quote
 from datetime import datetime
 import logging
 
-__version__ = "1.0.3" 
-"""# Versão 1.0.3 de 2026.06.30"""
+__version__ = "1.0.4" 
+"""# Versão 1.0.4 de 2026.07.17"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -57,6 +57,7 @@ class SRS:
         self.tarefa = tarefa
         self.maquina = maquina
         self.usarProxy = False
+        self.certificado = False
         self.logFile = logFile
         self.execucaoId = execucaoId
         self.filaId = filaId
@@ -128,8 +129,12 @@ class SRS:
         logging.info(f'Atribuindo FilaId: {filaId}')
         self.filaId = filaId
 
+    def setCertificadoDigital(self, caminho_certificado:str) -> None:
+        """Define o certificado digital a ser utilizado nas requisições"""
+        logging.info(f'Atribuindo certificado digital: {caminho_certificado}')
+        self.certificado = caminho_certificado
 
-    # Funções de apoio
+    #funções de apoio
     def setLogFile(self, localLog:str, logFile:str) -> None:
         logging.info(f'Atribuindo configuração de log em arquivo - Local do arquivo: {localLog}, nivel de log: {logFile}')
         self.logFile = logFile
@@ -174,7 +179,34 @@ class SRS:
             case 'ALERT': logging.warning(mensagem)
             case _: logging.info(mensagem)
 
+    def _request(self, url:str, data:dict) -> dict:
+        try:
+            retorno = {} 
+            if self.usarProxy:
+                response = requests.post(url, data=data, proxies=self.urlProxy, verify=False)
+            elif self.certificado:
+                response = requests.post(url, data=data, verify=self.certificado)
+            else:
+                response = requests.post(url, data=data)
 
+            logging.debug(f'Retorno: {response.text}')
+            if response.status_code != 200:
+                retorno = {'Autorizado': False, 'Mensagem': f'Erro na requisição: {response.status_code}'}
+                logging.error(f'Erro na requisição: {response.status_code}')
+            else: 
+                try: retorno = json.loads(response.text)
+                except Exception as e: 
+                    erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
+                    logging.error(f'Erro na requisição: {erro}')
+                    retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+        except Exception as e: 
+            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
+            logging.error(f'Erro na requisição: {erro}')
+            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+        
+        return retorno
+
+            
     # Funçoes de comunicação com as APIs do SRS
     # controle de execução
     def execucaoIniciar(self) -> dict: 
@@ -197,15 +229,7 @@ class SRS:
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
         logging.info(f'----EXECUCAO INICIADA----')
         logging.debug(f'Parametros envidados:{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/iniciar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/execucao/iniciar", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            logging.error(f'Falha ao iniciar execução: {erro}')
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+        retorno = self._request(f"{self.url}api/execucao/iniciar", entrada)
 
         if retorno["Autorizado"]: 
             self.execucaoId = retorno['ExecucaoId']
@@ -240,16 +264,7 @@ class SRS:
             entrada['Arquivo'] = json.dumps(self.formatar_arquivo(arquivo))
 
         logging.debug(f'Registrando log :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/log", data=entrada, proxies=self.urlProxy, verify=False, files=arquivo)
-        else: response = requests.request("POST", f"{self.url}api/execucao/log", data=entrada, files=arquivo)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            logging.error(f'Falha ao registrar log: {erro}')
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-
+        retorno = self._request(f"{self.url}api/execucao/log", entrada)
         if not retorno["Autorizado"]: logging.error(f'Falha ao registrar log: {retorno}')
         return retorno
 
@@ -268,16 +283,7 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         logging.info(f'Alterando paramertos da tarefa- Parametros envidados:{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/tarefa/parametro", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/tarefa/parametro", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f'Falha ao alterar parametro: {erro}')
-
+        retorno = self._request(f"{self.url}api/tarefa/parametro", entrada)
         if not retorno["Autorizado"]: logging.error(f'Falha ao tentar alterar parametro: {retorno}')
         return retorno
 
@@ -293,16 +299,7 @@ class SRS:
         elif status != 'Ok': entrada['Status'] = status
 
         logging.info(f'Finalizando execução :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/execucao/finalizar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/execucao/finalizar", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f'Falha ao finalizar execução: {erro}')
-
+        retorno = self._request(f"{self.url}api/execucao/finalizar", entrada)
         if not retorno["Autorizado"]: logging.error(f'Falha ao finalizar execução: {retorno}')
         return retorno
 
@@ -318,16 +315,7 @@ class SRS:
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
 
         logging.info(f'Tarefa Executar, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/tarefa/executar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/tarefa/executar", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao requisitar execução de tarefa: {erro}")
-
+        retorno = self._request(f"{self.url}api/tarefa/executar", entrada)
         if not retorno["Autorizado"]: logging.error(f'Falha ao executar tarefa: {retorno}')
         return retorno
     
@@ -351,16 +339,7 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if confidencial ==0: logging.info(f'Enviar notificação, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/notificacao/notificar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/notificacao/notificar", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao enviar notificação: {erro}")
-
+        retorno = self._request(f"{self.url}api/execucao/iniciar", entrada)
         if not retorno["Autorizado"]: logging.error(f'Falha ao enviar notificação: {retorno}')
         return retorno
 
@@ -374,16 +353,7 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         logging.debug(f'Requisitando link de download:{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/tarefa/gerar_link", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/tarefa/gerar_link", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            logging.error(f'Falha ao requisitar link de download: {erro}')
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-
+        retorno = self._request(f"{self.url}api/execucao/iniciar", entrada)
         if not retorno["Autorizado"]: logging.error(f'Falha ao requisitar link de download: {retorno}')
         return retorno
 
@@ -435,14 +405,7 @@ class SRS:
         }
 
         logging.info(f'Credencial obter, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/credencial/obter", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/credencial/obter", data=entrada)
-
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-
+        retorno = self._request(f"{self.url}api/credencial/obter", entrada)
         if not retorno["Autorizado"]: logging.error(f'Falha ao obter credencial: {retorno}')
         return retorno
 
@@ -472,16 +435,7 @@ class SRS:
         }
 
         logging.info(f'Credencial obter, parametros :{log}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/credencial/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/credencial/atualizar", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao alterar credencial: {erro}")
-
+        retorno = self._request(f"{self.url}api/credencial/atualizar", entrada)
         if not retorno["Autorizado"]: logging.error(f'Falha ao alterar credencial: {retorno}')
         return retorno
 
@@ -505,16 +459,7 @@ class SRS:
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
 
         logging.info(f'Fila inserir, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao inserir fila: {erro}")
-
+        retorno = self._request(f"{self.url}api/fila/inserir", entrada)
         if retorno["Autorizado"]: 
             if inserirExecutando: 
                 self.filaId = retorno['FilaId']
@@ -541,15 +486,7 @@ class SRS:
         }
 
         logging.info(f'Fila inserir LOTE, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/fila/inserir", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao inserir fila lote: {erro}")
+        retorno = self._request(f"{self.url}api/fila/inserir", entrada)
 
         if not retorno["Autorizado"]: logging.error(f'Falha ao inserir lote na fila: {retorno}')
         return retorno
@@ -581,25 +518,15 @@ class SRS:
         if self.filaId: entrada['FilaId'] = self.filaId
 
         logging.info(f'FilaProximo, parametros:{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/proximo", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/fila/proximo", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: 
-            retorno = json.loads(response.text)
-            if retorno["Autorizado"]:
-                for item in retorno['Fila']: 
-                    self.filaId = item['FilaId']
-                    if type(item['ParametrosEntrada']) == str:
-                        item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
-                    logging.info(f'Item de fila recebido: {self.filaId}')
-            else: logging.info(f'Sem registros na fila: {retorno}')
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao buscar proximo da fila: {erro}")
-            self.filaId = False
+        retorno = self._request(f"{self.url}api/fila/proximo", entrada)
         
+        if retorno["Autorizado"]:
+            for item in retorno['Fila']: 
+                self.filaId = item['FilaId']
+                if type(item['ParametrosEntrada']) == str:
+                    item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
+                logging.info(f'Item de fila recebido: {self.filaId}')
+        else: logging.info(f'Sem registros na fila: {retorno}')
         return retorno
 
     def filaAtualizar(self, filaId=False, parametrosSaida:dict={}, statusId:int=2, status:str='FilaOk', proximo:int=0, mensagem:str='Fila atualizada com sucesso') -> dict:
@@ -618,18 +545,10 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if statusId !=2: entrada['StatusId'] = statusId
-        elif status != 'Ok': entrada['Status'] = status
+        elif status != 'FilaOk': entrada['Status'] = status
 
         logging.info(f'Fila atualizar, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao atualizar imte de fila: {erro}")
+        retorno = self._request(f"{self.url}api/fila/atualizar", entrada)
 
         if retorno["Autorizado"]: 
             logging.debug(f'Item de fila {filaId} atualizado com sucesso')
@@ -641,6 +560,7 @@ class SRS:
                             item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
                         logging.info(f'Item de fila recebido: {self.filaId}')
                 else: logging.info(f'Sem registros na fila: {retorno}')
+            elif statusId != 1: self.filaId = False #mantem a fila caso seja uma atualização mantendo na fila.
 
         else: logging.error(f'Falha ao atualizar item de fila: {retorno}')
         return retorno
@@ -665,16 +585,10 @@ class SRS:
         }
 
         logging.info(f'Fila atualizar em lote, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/fila/atualizar", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
+        retorno = self._request(f"{self.url}api/fila/atualizar", entrada)
 
         if not retorno["Autorizado"]: logging.error(f'Falha ao atualizar lote de fila: {retorno}')
+        self.filaId = False
         return retorno
 
     def filaConsultar(self, criterio:list, ordenadoPor:str, limite:int=10, workflow=False, tarefa=False) -> dict:
@@ -726,15 +640,7 @@ class SRS:
         }
 
         logging.info(f'Fila consultar, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/fila/consultar", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/fila/consultar", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao consultar fila: {erro}")
+        retorno = self._request(f"{self.url}api/fila/consultar", entrada)
 
         if not retorno["Autorizado"]: logging.error(f'Falha ao consultar fila: {retorno}')
         return retorno
@@ -758,15 +664,7 @@ class SRS:
         }
 
         logging.info(f'Requisição relatorio: {relatorio}, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}api/relatorio/{relatorio}", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}api/relatorio/{relatorio}", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao requisitar relatorio: {erro}")
+        retorno = self._request(f"{self.url}api/relatorio/{relatorio}", entrada)
 
         if not retorno["Autorizado"]: logging.error(f'Falha ao requisitar relatorio: {relatorio}: {retorno}')
         return retorno
@@ -780,16 +678,9 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         logging.info(f'Chamando AgenteIA: {agenteAlias}, Prompt :{prompt}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}ia/{agenteAlias}", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}ia/{agenteAlias}", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao acionar agenteIA: {erro}")
-            
+        retorno = self._request(f"{self.url}api/ia/{agenteAlias}", entrada)
+        
+        if not retorno["Autorizado"]: logging.error(f'Falha ao consultar agente IA: {agenteAlias}: {retorno}')
         return retorno
 
     # principais serviços do BotStore
@@ -805,16 +696,8 @@ class SRS:
         }
         if assincrono: entrada['Retorno'] = 1
         logging.info(f'Requisição de serviço BOTSTORE: {servico}, parametros :{entrada}')
-        if self.usarProxy: response = requests.request("POST", f"{self.url}botstore/{servico}", data=entrada, proxies=self.urlProxy, verify=False)
-        else: response = requests.request("POST", f"{self.url}botstore/{servico}", data=entrada)
-
-        logging.debug(f'Retorno: {response.text}')
-        try: retorno = json.loads(response.text)
-        except Exception as e: 
-            erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
-            logging.error(f"Falha ao BotStore {servico}: {erro}")
-
+        retorno = self._request(f"{self.url}api/botstore/{servico}", entrada)
+        if not retorno["Autorizado"]: logging.error(f'Falha ao consultar serviço BOTSTORE: {servico}: {retorno}')
         return retorno
     
     def bsQuebraCaptcha(self, imagemCaptcha) -> dict:
@@ -839,8 +722,7 @@ class SRS:
         limite = 160 #2 minutos 
         for i in range(limite):
             try:  
-                response = requests.post(url, data=payload)
-                retorno = json.loads(response.text)
+                retorno = self._request(f"{self.url}botstore/consulta_andamento", payload)
                 logging.debug(f"{i} - Aguardando resposta do serviço: {botStoreId}, status: {retorno['Resultado']['StatusId']}")
                 if not retorno['Autorizado']: 
                     logging.error(f"Falha ao consultar andamento da requisição: {erro}")
