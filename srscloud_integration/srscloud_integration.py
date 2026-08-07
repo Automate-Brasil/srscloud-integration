@@ -4,8 +4,8 @@ from urllib.parse import quote
 from datetime import datetime
 import logging
 
-__version__ = "1.0.4" 
-"""# Versão 1.0.4 de 2026.07.17"""
+__version__ = "1.0.6" 
+"""# Versão 1.0.6 de 2026.08.06"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -103,7 +103,7 @@ class SRS:
             try:
                 argumentos = r"C:\Automate Brasil\Agent\temp\argumentos.txt"
                 with open(argumentos, "r") as f: args = f.read()
-                execucaoId, filaId = args.split(';')
+                self.execucaoId, self.filaId = args.split(';')
                 os.remove(argumentos)
             except: argumentos = False
         logging.warning(f'## Integração SRSCloud versão: {__version__}: Workflow: {workflow}, Tarefa: {tarefa}, Máquina: {maquina}, ExecucaoId: {self.execucaoId}, FilaId: {self.filaId}, LogFile: {logFile}, LogFormat: {logFormat}, LocalLog: {self.localLog}')
@@ -174,10 +174,11 @@ class SRS:
         False = desabilita o registro de log em arquivo
         """
         match nivel.upper(): 
-            case 'DEBUG': logging.debug(mensagem)
-            case 'ERROR': logging.error(mensagem)
-            case 'ALERT': logging.warning(mensagem)
-            case _: logging.info(mensagem)
+            case 'DEBUG': logging.debug(mensagem, stacklevel=2)
+            case 'ERROR': logging.error(mensagem, stacklevel=2)
+            case 'ALERT': logging.warning(mensagem, stacklevel=2)
+            case 'WARNING': logging.warning(mensagem, stacklevel=2)
+            case _: logging.info(mensagem, stacklevel=2)
 
     def _request(self, url:str, data:dict) -> dict:
         try:
@@ -189,24 +190,24 @@ class SRS:
             else:
                 response = requests.post(url, data=data)
 
-            logging.debug(f'Retorno: {response.text}')
+            logging.debug(f'Retorno: {response.text}', stacklevel=2)
             if response.status_code != 200:
                 retorno = {'Autorizado': False, 'Mensagem': f'Erro na requisição: {response.status_code}'}
-                logging.error(f'Erro na requisição: {response.status_code}')
+                logging.error(f'Erro na requisição: {response.status_code}', stacklevel=2)
             else: 
                 try: retorno = json.loads(response.text)
                 except Exception as e: 
                     erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-                    logging.error(f'Erro na requisição: {erro}')
+                    logging.error(f'Erro na requisição: {erro}', stacklevel=2)
                     retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
         except Exception as e: 
             erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
-            logging.error(f'Erro na requisição: {erro}')
+            logging.error(f'Erro na requisição: {erro}', stacklevel=2)
             retorno = {'Autorizado': False, 'Mensagem': f'Falha na comunicação:{erro}'}
         
         return retorno
 
-            
+
     # Funçoes de comunicação com as APIs do SRS
     # controle de execução
     def execucaoIniciar(self) -> dict: 
@@ -263,9 +264,9 @@ class SRS:
             if 'filename' not in arquivo: arquivo = self.formatar_arquivo(arquivo)
             entrada['Arquivo'] = json.dumps(self.formatar_arquivo(arquivo))
 
-        logging.debug(f'Registrando log :{entrada}')
+        logging.info(f'Log:{entrada}', stacklevel=2)
         retorno = self._request(f"{self.url}api/execucao/log", entrada)
-        if not retorno["Autorizado"]: logging.error(f'Falha ao registrar log: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao registrar log: {retorno}', stacklevel=2)
         return retorno
 
     def parametroAtualizar(self, parametro:str, valor, workflow=False, tarefa=False) -> dict:
@@ -282,9 +283,9 @@ class SRS:
             'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
-        logging.info(f'Alterando paramertos da tarefa- Parametros envidados:{entrada}')
+        logging.info(f'Alterando paramertos da tarefa- Parametros envidados:{entrada}', stacklevel=2)
         retorno = self._request(f"{self.url}api/tarefa/parametro", entrada)
-        if not retorno["Autorizado"]: logging.error(f'Falha ao tentar alterar parametro: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao tentar alterar parametro: {retorno}', stacklevel=2)
         return retorno
 
     def execucaoFinalizar(self, status:str='Ok', statusId:int=4, mensagem:str='Execução finalizada') -> dict:
@@ -298,9 +299,9 @@ class SRS:
         if statusId !=4: entrada['StatusId'] = statusId
         elif status != 'Ok': entrada['Status'] = status
 
-        logging.info(f'Finalizando execução :{entrada}')
+        logging.info(f'Finalizando execução :{entrada}', stacklevel=2)
         retorno = self._request(f"{self.url}api/execucao/finalizar", entrada)
-        if not retorno["Autorizado"]: logging.error(f'Falha ao finalizar execução: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao finalizar execução: {retorno}', stacklevel=2)
         return retorno
 
     def executarTarefa(self, workflow:str, tarefa:str, maquina:str, filaId=False) -> dict: 
@@ -314,9 +315,9 @@ class SRS:
         if filaId: entrada['FilaId'] = filaId
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
 
-        logging.info(f'Tarefa Executar, parametros :{entrada}')
+        logging.info(f'Tarefa Executar, parametros :{entrada}', stacklevel=2)
         retorno = self._request(f"{self.url}api/tarefa/executar", entrada)
-        if not retorno["Autorizado"]: logging.error(f'Falha ao executar tarefa: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao executar tarefa: {retorno}', stacklevel=2)
         return retorno
     
     def enviarNotificacao(self, canal:list, destino:list, assunto:str, mensagem:str, confidencial:int=0): 
@@ -338,9 +339,9 @@ class SRS:
             'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
-        if confidencial ==0: logging.info(f'Enviar notificação, parametros :{entrada}')
-        retorno = self._request(f"{self.url}api/execucao/iniciar", entrada)
-        if not retorno["Autorizado"]: logging.error(f'Falha ao enviar notificação: {retorno}')
+        if confidencial ==0: logging.info(f'Enviar notificação, parametros :{entrada}', stacklevel=2)
+        retorno = self._request(f"{self.url}api/notificacao/notificar", entrada)
+        if not retorno["Autorizado"]: logging.error(f'Falha ao enviar notificação: {retorno}', stacklevel=2)
         return retorno
 
     def busca_link_download(self, arquivo) -> dict:
@@ -352,9 +353,9 @@ class SRS:
             'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
-        logging.debug(f'Requisitando link de download:{entrada}')
-        retorno = self._request(f"{self.url}api/execucao/iniciar", entrada)
-        if not retorno["Autorizado"]: logging.error(f'Falha ao requisitar link de download: {retorno}')
+        logging.debug(f'Requisitando link de download:{entrada}', stacklevel=2)
+        retorno = self._request(f"{self.url}api/tarefa/gerar_link", entrada)
+        if not retorno["Autorizado"]: logging.error(f'Falha ao requisitar link de download: {retorno}', stacklevel=2)
         return retorno
 
     # controle de credenciais
@@ -404,9 +405,9 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        logging.info(f'Credencial obter, parametros :{entrada}')
+        logging.info(f'Credencial obter, parametros :{entrada}', stacklevel=2)
         retorno = self._request(f"{self.url}api/credencial/obter", entrada)
-        if not retorno["Autorizado"]: logging.error(f'Falha ao obter credencial: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao obter credencial: {retorno}', stacklevel=2)
         return retorno
 
     def credencialAlterar(self, credencialId:str, expiraEm=False, parametro=False, valorAntigo=False, valorNovo=False, ativo:int=1) -> dict:
@@ -434,9 +435,9 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        logging.info(f'Credencial obter, parametros :{log}')
+        logging.info(f'Credencial obter, parametros :{log}', stacklevel=2)
         retorno = self._request(f"{self.url}api/credencial/atualizar", entrada)
-        if not retorno["Autorizado"]: logging.error(f'Falha ao alterar credencial: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao alterar credencial: {retorno}', stacklevel=2)
         return retorno
 
 
@@ -458,14 +459,15 @@ class SRS:
         if inserirExecutando: entrada['Status'] = 'EmExecucao'
         if self.execucaoId: entrada['ExecucaoId'] = self.execucaoId
 
-        logging.info(f'Fila inserir, parametros :{entrada}')
+        logging.info(f'Fila inserir ({workflow} - {tarefa}), Referencia :{referencia}', stacklevel=2)
+        logging.debug(f'Fila inserir, parametros :{entrada}')
         retorno = self._request(f"{self.url}api/fila/inserir", entrada)
         if retorno["Autorizado"]: 
             if inserirExecutando: 
                 self.filaId = retorno['FilaId']
                 logging.info(f'Item {referencia} inserido na fila da tarefa {tarefa} com sucesso: {retorno["FilaId"]} e agora está em execução')
             else: logging.info(f'Item {referencia} inserido na fila da tarefa {tarefa} com sucesso: {retorno["FilaId"]}')
-        else: logging.error(f'Falha ao inserir item de fila: {retorno}')
+        else: logging.error(f'Falha ao inserir item de fila: {retorno}', stacklevel=2)
         return retorno
 
     def filaInserirLote(self, lote:list, workflow=False, tarefa=False) -> dict:
@@ -485,10 +487,11 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        logging.info(f'Fila inserir LOTE, parametros :{entrada}')
+        logging.info(f'Fila inserir LOTE ({workflow} - {tarefa}), itens no Lote :{len(lote)})', stacklevel=2)
+        logging.debug(f'Fila inserir LOTE, parametros :{entrada}')
         retorno = self._request(f"{self.url}api/fila/inserir", entrada)
 
-        if not retorno["Autorizado"]: logging.error(f'Falha ao inserir lote na fila: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao inserir lote na fila: {retorno}', stacklevel=2)
         return retorno
 
     def filaProximo(self, qtd:int=1) -> dict:#retorna o proximo item da fila, voce pode alterar a quantidade para trazer mais de 1
@@ -517,7 +520,7 @@ class SRS:
         }
         if self.filaId: entrada['FilaId'] = self.filaId
 
-        logging.info(f'FilaProximo, parametros:{entrada}')
+        logging.info(f'FilaProximo, parametros:{entrada}', stacklevel=2)
         retorno = self._request(f"{self.url}api/fila/proximo", entrada)
         
         if retorno["Autorizado"]:
@@ -525,8 +528,8 @@ class SRS:
                 self.filaId = item['FilaId']
                 if type(item['ParametrosEntrada']) == str:
                     item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
-                logging.info(f'Item de fila recebido: {self.filaId}')
-        else: logging.info(f'Sem registros na fila: {retorno}')
+                logging.info(f'Item de fila recebido: {self.filaId}', stacklevel=2)
+        else: logging.info(f'Sem registros na fila: {retorno}', stacklevel=2)
         return retorno
 
     def filaAtualizar(self, filaId=False, parametrosSaida:dict={}, statusId:int=2, status:str='FilaOk', proximo:int=0, mensagem:str='Fila atualizada com sucesso') -> dict:
@@ -547,22 +550,23 @@ class SRS:
         if statusId !=2: entrada['StatusId'] = statusId
         elif status != 'FilaOk': entrada['Status'] = status
 
-        logging.info(f'Fila atualizar, parametros :{entrada}')
+        logging.info(f'Fila atualizar FilaId: {filaId}, Mensagem :{mensagem}', stacklevel=2)
+        logging.debug(f'Fila atualizar, parametros :{entrada}')
         retorno = self._request(f"{self.url}api/fila/atualizar", entrada)
 
         if retorno["Autorizado"]: 
-            logging.debug(f'Item de fila {filaId} atualizado com sucesso')
+            logging.debug(f'Item de fila {filaId} atualizado com sucesso', stacklevel=2)
             if proximo >0:
                 if retorno['Proximo']['Autorizado']:
                     for item in retorno['Proximo']['Fila']: 
                         self.filaId = item['FilaId']
                         if type(item['ParametrosEntrada']) == str:
                             item['ParametrosEntrada'] = json.loads(item['ParametrosEntrada'])
-                        logging.info(f'Item de fila recebido: {self.filaId}')
-                else: logging.info(f'Sem registros na fila: {retorno}')
+                        logging.info(f'Item de fila recebido: {self.filaId}', stacklevel=2)
+                else: logging.info(f'Sem registros na fila: {retorno}', stacklevel=2)
             elif statusId != 1: self.filaId = False #mantem a fila caso seja uma atualização mantendo na fila.
 
-        else: logging.error(f'Falha ao atualizar item de fila: {retorno}')
+        else: logging.error(f'Falha ao atualizar item de fila: {retorno}', stacklevel=2)
         return retorno
 
     def filaAtualizarLote(self, lote:int) -> dict:
@@ -583,11 +587,11 @@ class SRS:
             'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
-
-        logging.info(f'Fila atualizar em lote, parametros :{entrada}')
+        logging.info(f'Fila atualizar em lote. Itens no Lote :{len(lote)})', stacklevel=2)
+        logging.debug(f'Fila atualizar em lote, parametros :{entrada}')
         retorno = self._request(f"{self.url}api/fila/atualizar", entrada)
 
-        if not retorno["Autorizado"]: logging.error(f'Falha ao atualizar lote de fila: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao atualizar lote de fila: {retorno}', stacklevel=2)
         self.filaId = False
         return retorno
 
@@ -639,10 +643,11 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        logging.info(f'Fila consultar, parametros :{entrada}')
+        logging.info(f'Fila consultar ({workflow} - {tarefa}), Criterios :{criterio}', stacklevel=2)
+        logging.debug(f'Fila consultar, parametros :{entrada}')
         retorno = self._request(f"{self.url}api/fila/consultar", entrada)
 
-        if not retorno["Autorizado"]: logging.error(f'Falha ao consultar fila: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao consultar fila: {retorno}', stacklevel=2)
         return retorno
 
     def relatorio(self, relatorio:str, dataInicio, dataFim, workflowAlias=False, tarefaAlias=False, statusId=False, pagina:int=0, limite:int=1000) -> dict:
@@ -663,10 +668,10 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
 
-        logging.info(f'Requisição relatorio: {relatorio}, parametros :{entrada}')
+        logging.info(f'Requisição relatorio: {relatorio}, parametros :{entrada}', stacklevel=2)
         retorno = self._request(f"{self.url}api/relatorio/{relatorio}", entrada)
 
-        if not retorno["Autorizado"]: logging.error(f'Falha ao requisitar relatorio: {relatorio}: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao requisitar relatorio: {relatorio}: {retorno}', stacklevel=2)
         return retorno
 
     # Agentes de IA 
@@ -677,10 +682,10 @@ class SRS:
             'Funcao':inspect.stack()[1][3],
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
-        logging.info(f'Chamando AgenteIA: {agenteAlias}, Prompt :{prompt}')
+        logging.info(f'Chamando AgenteIA: {agenteAlias}, Prompt :{prompt}', stacklevel=2)
         retorno = self._request(f"{self.url}api/ia/{agenteAlias}", entrada)
         
-        if not retorno["Autorizado"]: logging.error(f'Falha ao consultar agente IA: {agenteAlias}: {retorno}')
+        if not retorno["Autorizado"]: logging.error(f'Falha ao consultar agente IA: {agenteAlias}: {retorno}', stacklevel=2)
         return retorno
 
     # principais serviços do BotStore
@@ -695,9 +700,10 @@ class SRS:
             'LinhaComando':inspect.currentframe().f_back.f_lineno
         }
         if assincrono: entrada['Retorno'] = 1
-        logging.info(f'Requisição de serviço BOTSTORE: {servico}, parametros :{entrada}')
-        retorno = self._request(f"{self.url}api/botstore/{servico}", entrada)
-        if not retorno["Autorizado"]: logging.error(f'Falha ao consultar serviço BOTSTORE: {servico}: {retorno}')
+        logging.info(f'Requisição de serviço BOTSTORE: {servico}', stacklevel=2)
+        logging.debug(f'Requisição de serviço BOTSTORE: {servico}, parametros :{entrada}')
+        retorno = self._request(f"{self.url}botstore/{servico}", entrada)
+        if not retorno["Autorizado"]: logging.error(f'Falha ao consultar serviço BOTSTORE: {servico}: {retorno}', stacklevel=2)
         return retorno
     
     def bsQuebraCaptcha(self, imagemCaptcha) -> dict:
@@ -706,14 +712,14 @@ class SRS:
         return self.botstoreRequisicaoGenerica('captcha', parametrosEntrada)
     
     def bsQuebraRecaptcha(self, googlekey:str, pageurl:str) -> dict:
-        logging.info('Iniciando Quebra de Recaptcha Assincrono...')
+        logging.info('Iniciando Quebra de Recaptcha Assincrono...', stacklevel=2)
         parametrosEntrada = {'googlekey': googlekey, 'pageurl': pageurl}
         retorno = self.botstoreRequisicaoGenerica('recaptcha', parametrosEntrada, assincrono=True)
         if retorno['Autorizado']:
             botStoreId = retorno['BotStoreId']
-            logging.debug(f'Requisição registrada com sucesso: {botStoreId}')
+            logging.debug(f'Requisição registrada com sucesso: {botStoreId}', stacklevel=2)
         else: 
-            logging.error(f"Falha ao requisitar Recaptcha: {erro}")
+            logging.error(f"Falha ao requisitar Recaptcha: {erro}", stacklevel=2)
             return retorno
         
         url=f"{self.url}botstore/consulta_andamento"
@@ -723,18 +729,18 @@ class SRS:
         for i in range(limite):
             try:  
                 retorno = self._request(f"{self.url}botstore/consulta_andamento", payload)
-                logging.debug(f"{i} - Aguardando resposta do serviço: {botStoreId}, status: {retorno['Resultado']['StatusId']}")
+                logging.debug(f"{i} - Aguardando resposta do serviço: {botStoreId}, status: {retorno['Resultado']['StatusId']}", stacklevel=2)
                 if not retorno['Autorizado']: 
-                    logging.error(f"Falha ao consultar andamento da requisição: {erro}")
+                    logging.error(f"Falha ao consultar andamento da requisição: {erro}", stacklevel=2)
                     return retorno
                 elif retorno['Resultado']['StatusId'] != 0: 
-                    logging.debug(f"{i} - Retorno identificado: {retorno}")
+                    logging.debug(f"{i} - Retorno identificado: {retorno}", stacklevel=2)
                     return retorno['Resultado']['ParametrosSaida']
                 time.sleep(1)
             except Exception as e: 
                 erro = {'Msg': 'Erro', 'type': type(e).__name__, 'message': str(e), 'lineo': e.__traceback__.tb_lineno}
                 mensagem = f'Erro no acompanhamento da quebra do recaptcha:{erro} : retorno: {retorno}'
-                logging.error(mensagem)
+                logging.error(mensagem, stacklevel=2)
                 return {'Autorizado':False, 'Mensagem': mensagem}
     
     def bsConsultaCNPJ(self, cnpj:str) -> dict:
