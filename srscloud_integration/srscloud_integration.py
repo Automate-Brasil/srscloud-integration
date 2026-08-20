@@ -4,8 +4,8 @@ from urllib.parse import quote
 from datetime import datetime
 import logging
 
-__version__ = "1.0.6" 
-"""# Versão 1.0.6 de 2026.08.06"""
+__version__ = "1.0.7" 
+"""# Versão 1.0.7 de 2026.08.13"""
 
 """# Status válidos para execução
 --- valores para StatusId ou Status voce pode usar um ou outro ---
@@ -63,6 +63,7 @@ class SRS:
         self.filaId = filaId
         hoje = datetime.now().strftime("%Y-%m-%d")
         self.localLog = f'c:/Automate Brasil/log/{workflow}/{tarefa}/log_{hoje}.txt'
+        self.argumentos = r"C:\Automate Brasil\Agent\args\args.txt"
 
         # Configuração do log 
         logger = logging.getLogger()
@@ -92,20 +93,25 @@ class SRS:
         try:
             arg1 = sys.argv[1] #recebe a ExecucaoId 
             if len(arg1) == 24: self.execucaoId = arg1
+            logging.debug(f'ExecucaoId recebido de sys: {self.execucaoId}')
         except: self.execucaoId = execucaoId
 
         try: 
             arg2 = sys.argv[2] #recebe a FilaId
             if len(arg2) == 24: self.filaId = arg2
+            logging.debug(f'FilaId recebido de sys: {self.filaId}')
         except: self.filaId = filaId
 
         if not self.execucaoId: 
             try:
-                argumentos = r"C:\Automate Brasil\Agent\temp\argumentos.txt"
+                argumentos = self.argumentos
                 with open(argumentos, "r") as f: args = f.read()
                 self.execucaoId, self.filaId = args.split(';')
+                logging.debug(f'Argumentos lidos do arquivo: ExecucaoId={self.execucaoId}, FilaId={self.filaId}')
                 os.remove(argumentos)
-            except: argumentos = False
+            except Exception as e:
+                logging.error(f'Falha ao ler arquivo de argumentos: {e}')
+                argumentos = False
         logging.warning(f'## Integração SRSCloud versão: {__version__}: Workflow: {workflow}, Tarefa: {tarefa}, Máquina: {maquina}, ExecucaoId: {self.execucaoId}, FilaId: {self.filaId}, LogFile: {logFile}, LogFormat: {logFormat}, LocalLog: {self.localLog}')
 
     def proxy(self, server:str, user:str, password:str) -> None:
