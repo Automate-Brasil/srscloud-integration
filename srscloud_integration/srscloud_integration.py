@@ -110,7 +110,7 @@ class SRS:
                 logging.debug(f'Argumentos lidos do arquivo: ExecucaoId={self.execucaoId}, FilaId={self.filaId}')
                 os.remove(argumentos)
             except Exception as e:
-                logging.error(f'Falha ao ler arquivo de argumentos: {e}')
+                logging.debug(f'Falha ao ler arquivo de argumentos: {e}')
                 argumentos = False
         logging.warning(f'## Integração SRSCloud versão: {__version__}: Workflow: {workflow}, Tarefa: {tarefa}, Máquina: {maquina}, ExecucaoId: {self.execucaoId}, FilaId: {self.filaId}, LogFile: {logFile}, LogFormat: {logFormat}, LocalLog: {self.localLog}')
 
